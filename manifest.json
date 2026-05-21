@@ -1,0 +1,15 @@
+{
+  "name": "Hash Ai",
+  "short_name": "HashAi",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0b0d0f",
+  "theme_color": "#0b0d0f",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -275,6 +275,22 @@ input, textarea { width: 100%; padding: 14px; margin: 10px 0; border-radius: 12p
 </div>
 
 <div id="model-menu">
+<div class="model-opt" onclick="setModel('DeepSeek-R1', this)">
+<strong>🧪 DeepSeek R1 (Thinking)</strong>
+<span class="model-info">Ability: Chain-of-Thought Reasoning | Best for: Logic & Coding</span>
+</div>
+<div class="model-opt" onclick="setModel('Llama-3.2-11B-Vision-Instruct', this)">
+<strong>👁️ Llama 3.2 Vision (See & Speak)</strong>
+<span class="model-info">Ability: Understands Images | Best for: Vision Tasks</span>
+</div>
+<div class="model-opt" onclick="setModel('Llama-3.3-70B-Instruct', this)">
+<strong>🦙 Llama 3.3 (High IQ)</strong>
+<span class="model-info">Ability: Deep Reasoning & Logic | Best for: Complex Tasks</span>
+</div>
+<div class="model-opt" onclick="setModel('gpt-4o', this)">
+<strong>🧠 GPT-4o (Master)</strong>
+<span class="model-info">Ability: All-rounder Intelligence (Vision) | Best for: Creative & Analysis</span>
+</div>
 <div class="model-opt active-opt" onclick="setModel('gpt-4o-mini', this, true)">
 <strong>💎 GPT-4o Mini (Ultra Fast)</strong>
 <span class="model-info">Balanced speed and intelligence for daily chats</span>

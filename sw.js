@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hash-ai-v1.0.8';
+const CACHE_NAME = 'hash-ai-v1.1.0'; // <-- Jab bhi index.html badlein, yeh version zaroor badlein!
 const ASSETS = [
   './index.html',
   './icon.png',
@@ -7,12 +7,31 @@ const ASSETS = [
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
 ];
 
-// Install: Assets ko cache mein save karna
+// Install Event
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS)));
+  e.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
+  );
+  // Naye service worker ko foran install hone par waiting state mein le jana
+  self.skipWaiting();
 });
 
-// Fetch: Agar net na ho, to cache se load karna
+// Activate Event: Purani cache ko delete karna
+self.addEventListener('activate', (e) => {
+  e.waitUntil(
+    caches.keys().then((keys) => {
+      return Promise.all(
+        keys.map((key) => {
+          if (key !== CACHE_NAME) {
+            return caches.delete(key);
+          }
+        })
+      );
+    })
+  );
+});
+
+// Fetch Event
 self.addEventListener('fetch', (e) => {
   e.respondWith(
     caches.match(e.request).then((response) => {
@@ -21,11 +40,9 @@ self.addEventListener('fetch', (e) => {
   );
 });
 
-// Activate: Purani cache ko delete karna
-self.addEventListener('activate', (e) => {
-  e.waitUntil(
-    caches.keys().then((keys) => Promise.all(
-      keys.map((k) => k !== CACHE_NAME ? caches.delete(k) : null)
-    ))
-  );
+// Message Event: Jab user alert par click kare to naya SW activate ho jaye
+self.addEventListener('message', (event) => {
+  if (event.data === 'skipWaiting') {
+    self.skipWaiting();
+  }
 });

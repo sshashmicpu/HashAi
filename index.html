@@ -1245,10 +1245,40 @@ initApp();
 
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-            .then((reg) => console.log('Hash Ai Offline Ready!'))
-            .catch((err) => console.log('Service Worker Failed:', err));
+        // Service Worker register ho raha hai
+        navigator.serviceWorker.register('./sw.js').then((reg) => {
+            console.log('Hash Ai Offline Ready!');
+
+            // Update check karne ka logic
+            reg.onupdatefound = () => {
+                const installingWorker = reg.installing;
+                installingWorker.onstatechange = () => {
+                    if (installingWorker.state === 'installed') {
+                        if (navigator.serviceWorker.controller) {
+                            // Agar pehle se app chal rahi thi aur ab naya worker mila hai
+                            showUpdateAlert(installingWorker);
+                        }
+                    }
+                };
+            };
+        }).catch((err) => console.log('Service Worker Failed:', err));
     });
+
+    // Jab naya worker control le le, to page refresh kar do
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+            window.location.reload();
+            refreshing = true;
+        }
+    });
+}
+
+// Alert function
+function showUpdateAlert(worker) {
+    if (confirm("Hash AI ki nayi update available hai! Kya aap naya version load karna chahte hain?")) {
+        worker.postMessage('skipWaiting');
+    }
 }
 </script>
 </body>

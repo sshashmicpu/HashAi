@@ -1,960 +1,1255 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="ur">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wora Ai</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Hash Ai - HashTech</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Google+Sans:wght@400;500;700&family=Orbitron:wght@700&family=Lora:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="manifest" href="manifest.json">
+<style>
+:root {
+--bg: #0b0d0f; --card: #15191d; --text: #e0e6ed; --accent: #7ca5f8;
+--glass: rgba(255, 255, 255, 0.03); --msg-user: #1c2229; --border: #2d333b;
+--dynamic-grad: linear-gradient(90deg, #757575, #ffffff, #9e9e9e, #ffffff, #757575);
+--title-grad: linear-gradient(90deg, #e0e0e0, #4facfe, #00f2fe, #e0e0e0);
+--btn-shadow: none;
+--btn-opacity: 0.7;
+}
+
+/* Pure Black Theme */
+.pure-black {
+--bg: #000000; --card: #080808; --text: #ffffff; --accent: #4facfe;
+--glass: rgba(255, 255, 255, 0.05); --msg-user: #111111; --border: #222222;
+--dynamic-grad: linear-gradient(90deg, #ffffff, #888888, #ffffff);
+--title-grad: linear-gradient(90deg, #00f2fe, #4facfe, #7ca5f8);
+}
+
+.light-theme {
+--bg: #f5f7f9; --card: #ffffff; --text: #1f2937; --accent: #2563eb;
+--glass: rgba(0, 0, 0, 0.05); --msg-user: #e5e7eb; --border: #d1d5db;
+--dynamic-grad: linear-gradient(90deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+--title-grad: var(--dynamic-grad);
+--btn-shadow: 0 4px 6px rgba(0,0,0,0.05);
+--btn-opacity: 1;
+}
+
+.light-theme .feature-bubble { background: #ffffff; border: 1px solid #e5e7eb; color: #374151; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+.light-theme .msg-meta, .light-theme .history-date { color: #6b7280; opacity: 1; }
+.light-theme .powered-text { color: #9ca3af !important; }
+
+.scroll-hint { position: fixed; top: 75px; left: 0; width: 100%; z-index: 999; pointer-events: none; overflow: hidden; background: rgba(0,0,0,0.2); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: center; }
+.scroll-hint-inner { display: inline-block; white-space: nowrap; overflow: hidden; border-right: 2px solid var(--accent); color: var(--text); font-size: 8px; padding: 4px 20px; text-transform: uppercase; letter-spacing: 2px; width: 0; animation: typing-cycle 38s infinite; }
+@keyframes typing-cycle { 0% { width: 0; opacity: 1; } 10% { width: 330px; opacity: 1; } 18% { width: 330px; opacity: 1; } 20% { width: 330px; opacity: 0; } 100% { width: 0; opacity: 0; } }
+
+.light-theme .silver-btn-anim, .light-theme .suggest-pill, .light-theme .tool-btn { animation: none !important; }
+#send-btn { background: linear-gradient(90deg, #ff007f, #7ca5f8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine-anim 2s linear infinite; }
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Google Sans', sans-serif; transition: background 0.3s, color 0.3s, border-color 0.3s; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+input, textarea { -webkit-user-select: text; -moz-user-select: text; -ms-user-select: text; user-select: text; }
+
+body { background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; padding-top: 70px; }
+
+#bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; opacity: 0.4; }
+
+.silver-anim { background: var(--dynamic-grad); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine-anim 3s linear infinite; }
+.blue-title-anim { background: var(--title-grad); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine-anim 3s linear infinite; filter: drop-shadow(0 0 12px rgba(79, 172, 254, 0.4)); font-weight: 900; }
+.light-theme .blue-title-anim { animation: none; background: var(--accent); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: none; }
+
+.silver-btn-anim { background: var(--dynamic-grad) !important; background-size: 200% auto !important; color: #000 !important; font-weight: 800; animation: shine-anim 3s linear infinite; border: 1px solid rgba(0,0,0,0.1) !important; box-shadow: var(--btn-shadow); opacity: var(--btn-opacity); }
+.header-icon-silver { background: var(--dynamic-grad); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine-anim 3s linear infinite; cursor: pointer; font-size: 22px; opacity: var(--btn-opacity); }
+
+.welcome-screen { 
+    display: flex; flex-direction: column; align-items: center; justify-content: center; 
+    padding: 40px 20px; text-align: center; height: 100%; animation: slideIn 0.8s ease; 
+}
+.welcome-logo { font-family: 'Orbitron', sans-serif; font-size: 45px; margin-bottom: 20px; }
+.feature-grid { 
+    display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; max-width: 500px; margin-top: 20px; 
+}
+.feature-bubble { 
+    background: var(--glass); border: 1px solid var(--border); padding: 20px; border-radius: 20px; 
+    font-size: 13px; font-weight: 500; color: var(--text); backdrop-filter: blur(10px);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+}
+.feature-bubble i { color: var(--accent); font-size: 18px; }
+
+/* 1. Animated Border ki Movement */
+@keyframes borderPulse {
+    0% { border-color: #00f2ff; box-shadow: 0 0 5px rgba(0, 242, 255, 0.2); }
+    50% { border-color: #7000ff; box-shadow: 0 0 15px rgba(112, 0, 255, 0.4); }
+    100% { border-color: #00f2ff; box-shadow: 0 0 5px rgba(0, 242, 255, 0.2); }
+}
+
+/* 2. Badge ka Final Design */
+.decision-badge { 
+    display: inline-block; 
+    padding: 3px 10px; 
+    border-radius: 8px; 
+    font-size: 12px; 
+    text-transform: uppercase; 
+    letter-spacing: 1.5px; 
+    margin-bottom: 10px; 
+    font-weight: bold;
     
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        amoled: '#000000',
-                        woraDarkGray: '#121212',
-                        woraBorder: '#1f1f1f',
-                        woraText: '#f5f5f5'
-                    },
-                    animation: {
-                        'wora-spin': 'wora-spin 3s linear infinite',
-                        'wora-glow': 'wora-glow 2s ease-in-out infinite alternate',
-                    },
-                    keyframes: {
-                        'wora-spin': {
-                            '0%': { transform: 'rotate(0deg) scale(1)' },
-                            '50%': { transform: 'rotate(180deg) scale(1.15)' },
-                            '100%': { transform: 'rotate(360deg) scale(1)' },
-                        },
-                        'wora-glow': {
-                            '0%': { 'box-shadow': '0 0 10px rgba(6, 182, 212, 0.3), 0 0 20px rgba(59, 130, 246, 0.2)' },
-                            '100%': { 'box-shadow': '0 0 25px rgba(6, 182, 212, 0.7), 0 0 40px rgba(59, 130, 246, 0.5)' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    /* Colors & Contrast */
+    color: #FFAD00; /* Deep Orange Text */
+    background: #1a1a1a; /* Rich Dark Background for best contrast */
+    border: 2px solid #00f2ff; /* Initial Cyan Border */
+    
+    /* Animation Link */
+    animation: borderPulse 2s infinite ease-in-out;
+}
+.msg-meta { display: flex; justify-content: space-between; align-items: center; font-size: 10px; opacity: 0.6; margin-top: 8px; padding: 0 5px; }
 
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        .urdu-text {
-            font-family: 'Amiri', serif;
-            direction: rtl;
-        }
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .dark ::-webkit-scrollbar-thumb {
-            background: #262626;
-            border-radius: 4px;
-        }
-        html:not(.dark) ::-webkit-scrollbar-thumb {
-            background: #e5e5e5;
-            border-radius: 4px;
-        }
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-    </style>
+.copy-user-btn, .del-msg-btn { cursor: pointer; background: var(--glass); border: 1px solid var(--border); color: var(--text); padding: 2px 8px; border-radius: 5px; transition: 0.3s; margin-left: 5px; box-shadow: var(--btn-shadow); opacity: var(--btn-opacity); }
+.copy-user-btn:hover, .del-msg-btn:hover { background: var(--accent); color: #000; opacity: 1; }
+.del-msg-btn:hover { background: #ff4d4d; color: white; }
+
+.typing-loader { display: flex; gap: 5px; padding: 15px 25px; align-items: center; }
+.dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: pulse 1.5s infinite ease-in-out; box-shadow: 0 0 10px var(--accent); }
+.dot:nth-child(2) { animation-delay: 0.2s; }
+.dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.4; } 50% { transform: scale(1.5); opacity: 1; } }
+
+.file-disabled { opacity: 0.2 !important; cursor: not-allowed; filter: grayscale(1); }
+@keyframes shine-anim { to { background-position: 200% center; } }
+
+header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; background: var(--card); border-bottom: 2px solid var(--border); z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.3); position: fixed; top: 0; width: 100%; height: 70px; }
+.header-title { text-align: center; flex: 1; }
+.header-title h1 { 
+    font-family: 'Orbitron', sans-serif; font-size: 28px; font-weight: 900; letter-spacing: 1.7px; text-transform: uppercase;
+    -webkit-text-stroke: 1.2px rgba(255,255,255,0.2); 
+    paint-order: stroke fill; 
+}
+.header-title p { font-size: 4px; color: var(--text); opacity: 0.6; font-weight: 300; text-transform: uppercase; letter-spacing: 15px; margin-top: 2px; }
+
+#sidebar { position: fixed; left: -320px; width: 320px; height: 100%; background: var(--card); z-index: 2001; transition: 0.4s; padding: 20px; border-right: 1px solid var(--border); overflow-y: auto; }
+#sidebar.open { left: 0; box-shadow: 15px 0 50px rgba(0,0,0,0.7); }
+.history-card { background: var(--glass); padding: 12px; border-radius: 12px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 5px; border: 1px solid var(--border); font-size: 13px; cursor: pointer; box-shadow: var(--btn-shadow); opacity: var(--btn-opacity); }
+.history-card:hover { border-color: var(--accent); opacity: 1; }
+.history-info { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+.history-date { font-size: 9px; opacity: 0.5; font-weight: normal; }
+.del-btn { color: #ff4d4d; padding: 5px; cursor: pointer; opacity: 0.6; }
+
+#chat-window { flex: 1; overflow-y: auto; padding: 10px 0; display: flex; flex-direction: column; scroll-behavior: smooth; }
+.msg-container { width: 100%; display: flex; flex-direction: column; padding: 10px 0; scroll-margin-top: 20px; }
+.msg { padding: 20px 25px; line-height: 1.8; font-size: 16px; position: relative; animation: slideIn 0.3s ease; word-wrap: break-word; }
+.ai { align-self: flex-start; width: 100%; background: transparent; border-top: 1px solid var(--glass); border-bottom: 1px solid var(--glass); margin: 10px 0; }
+.user { align-self: flex-end; background: var(--msg-user); border-radius: 20px; border-bottom-right-radius: 4px; margin: 10px 20px; max-width: 85%; color: var(--accent); font-weight: 500; cursor: pointer; border: 1px solid transparent; }
+.light-theme .user { border-color: var(--border); box-shadow: var(--btn-shadow); }
+
+@keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+.ai * { line-height: 2 !important; }
+.serif-mode, .serif-mode * { font-family: 'Lora', serif !important; }
+
+.ai h1, .ai h2, .ai h3, .ai h4 { 
+    background: linear-gradient(90deg, #006400, #32cd32); 
+    -webkit-background-clip: text; 
+    -webkit-text-fill-color: transparent; 
+    font-weight: 800 !important; 
+    margin-top: 20px !important; 
+    margin-bottom: 10px !important; 
+    font-family: 'Google Sans', sans-serif !important; 
+}
+
+.ai strong, .ai b { color: var(--accent); font-weight: 700; }
+.ai li { margin-bottom: 10px; }
+
+.urdu-arabic, .urdu-arabic * { font-family: 'Amiri', serif !important; direction: rtl; text-align: right; font-size: 18px !important; line-height: 2.2 !important; }
+
+.urdu-arabic h1, .urdu-arabic h2, .urdu-arabic h3, .urdu-arabic h4 { 
+    line-height: 2.3 !important; 
+    margin-top: 25px !important; 
+    margin-bottom: 15px !important; 
+    background: linear-gradient(90deg, #006400, #32cd32); 
+    -webkit-background-clip: text; 
+    -webkit-text-fill-color: transparent; 
+    font-weight: bold !important; 
+}
+
+table { width: 100%; border-collapse: collapse; margin: 15px 0; background: var(--glass); border-radius: 8px; overflow: hidden; }
+th, td { border: 1px solid var(--border); padding: 12px; text-align: left; }
+th { background: var(--accent); color: #000; }
+
+pre { background: #000; padding: 20px; border-radius: 10px; overflow-x: auto; position: relative; margin: 15px 0; border: 1px solid var(--border); font-family: monospace !important; }
+.copy-code-btn { border: none; padding: 5px 10px; border-radius: 5px; font-size: 11px; cursor: pointer; font-weight: bold; }
+
+.msg-tools { display: flex; gap: 10px; margin-top: 20px; padding: 0 5px; flex-wrap: wrap; }
+.tool-btn { font-size: 12px; cursor: pointer; background: var(--glass); padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border); color: var(--text); font-weight: 500; display: flex; align-items: center; gap: 5px; box-shadow: var(--btn-shadow); opacity: var(--btn-opacity); }
+.tool-btn:hover { border-color: white; opacity: 1; }
+
+footer { padding: 15px; background: var(--bg); border-top: 1px solid var(--border); position: relative; }
+
+.input-box { 
+    background: var(--card); border-radius: 30px; padding: 8px 20px; display: flex; 
+    align-items: center; gap: 12px; border: 1.5px solid var(--border); position: relative; 
+    z-index: 10; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.input-box:focus-within { 
+    border-color: var(--accent); 
+    box-shadow: 0 0 20px rgba(124, 165, 248, 0.3), inset 0 0 10px rgba(124, 165, 248, 0.05);
+    transform: translateY(-2px);
+}
+.input-box::after {
+    content: ''; position: absolute; inset: -2px; border-radius: 32px;
+    background: linear-gradient(45deg, transparent, var(--accent), transparent);
+    z-index: -1; opacity: 0; transition: 0.5s;
+}
+.input-box:focus-within::after { opacity: 0.3; animation: rotate-glow 3s linear infinite; }
+
+@keyframes rotate-glow { 0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); } }
+
+#user-input { flex: 1; background: transparent; border: none; color: var(--text); font-size: 16px; outline: none; resize: none; max-height: 150px; }
+.btn-icon { font-size: 24px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+
+.wave-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 120px; pointer-events: none; overflow: hidden; display: none; z-index: 1; }
+.wave { position: absolute; bottom: -60px; width: 250%; height: 100%; background: linear-gradient(90deg, transparent, #4facfe, #00f2fe, #7ca5f8, transparent); opacity: 0.5; filter: blur(25px); animation: wave-rise 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+@keyframes wave-rise { 0% { transform: translateY(100%) scaleX(0.4); opacity: 0; } 40% { opacity: 0.6; } 100% { transform: translateY(-40px) scaleX(1.1); opacity: 0; } }
+
+#image-preview-container { display: none; padding: 10px; background: var(--glass); border-radius: 15px; margin-bottom: 10px; position: relative; width: fit-content; border: 1px solid var(--border); }
+#img-preview { max-width: 100px; border-radius: 10px; }
+.remove-img { position: absolute; top: -5px; right: -5px; background: red; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12px; }
+
+.suggestions { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; scrollbar-width: none; }
+.suggest-pill { background: var(--glass); border: 1px solid var(--border); padding: 8px 16px; border-radius: 20px; font-size: 13px; white-space: nowrap; cursor: pointer; box-shadow: var(--btn-shadow); opacity: var(--btn-opacity); }
+.suggest-pill:hover { opacity: 1; border-color: var(--accent); }
+
+#lang-menu, #model-menu { position: absolute; bottom: 70px; background: var(--card); border: 1px solid #777; border-radius: 15px; padding: 10px; display: none; flex-direction: column; gap: 5px; z-index: 2000; box-shadow: 0 5px 20px rgba(0,0,0,0.5); min-width: 250px; }
+#lang-menu { left: 20px; }
+#model-menu { left: 60px; }
+.lang-opt, .model-opt { padding: 10px 15px; border-radius: 8px; font-size: 13px; cursor: pointer; opacity: var(--btn-opacity); }
+.lang-opt:hover, .model-opt:hover { background: rgba(255,255,255,0.1); opacity: 1; }
+.active-opt { border: 1px solid #fff; opacity: 1 !important; }
+.model-info { display: block; font-size: 10px; opacity: 0.6; margin-top: 2px; }
+
+#scroll-btns { position: fixed; right: 30px; bottom: 150px; display: flex; flex-direction: column; gap: 12px; z-index: 100; }
+.scroll-nav { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3); opacity: var(--btn-opacity); }
+.scroll-nav:hover { opacity: 1; }
+
+#settings-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 3000; padding: 20px; }
+.modal-body { background: var(--card); width: 100%; max-width: 400px; padding: 25px; border-radius: 25px; border: 1px solid #777; }
+input, textarea { width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px; border: 1px solid #444; background: #000; color: white; }
+
+.theme-selector { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 15px 0; }
+.theme-btn { padding: 10px; border-radius: 10px; border: 1.5px solid #444; background: #111; color: #fff; cursor: pointer; font-size: 11px; text-align: center; }
+.theme-btn.active { border-color: var(--accent); background: var(--accent); color: #000; font-weight: bold; }
+
+#tabs-overlay { position: fixed; inset: 0; background: #000; z-index: 4000; display: none; flex-direction: column; padding: 20px; overflow-y: auto; }
+.tabs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 60px; }
+.tab-card { background: var(--card); border: 1px solid var(--border); border-radius: 15px; height: 200px; position: relative; overflow: hidden; display: flex; flex-direction: column; box-shadow: var(--btn-shadow); }
+.tab-card.active { border: 2px solid var(--accent); box-shadow: 0 0 15px var(--accent); }
+.tab-header { padding: 8px 12px; background: rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+.tab-preview { flex: 1; padding: 10px; font-size: 10px; opacity: 0.5; overflow: hidden; pointer-events: none; }
+.close-tab { font-size: 16px; cursor: pointer; padding: 5px; }
+.tabs-top-bar { position: fixed; top: 0; left: 0; width: 100%; padding: 15px 20px; background: #000; display: flex; justify-content: space-between; align-items: center; z-index: 4001; }
+
+.hidden-ui-element { display: none !important; }
+
+#preview-overlay { position: fixed; inset: 0; background: #000; z-index: 9999; display: none; flex-direction: column; }
+#preview-toolbar { padding: 15px; display: flex; justify-content: space-between; align-items: center; background: #111; border-bottom: 1px solid #333; }
+#preview-frame { flex: 1; width: 100%; border: none; background: #fff; }
+
+#radial-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 99999; display: none; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+.radial-menu { position: relative; width: 300px; height: 300px; display: flex; justify-content: center; align-items: center; }
+.radial-btn { position: absolute; width: 60px; height: 60px; border-radius: 50%; background: var(--card); border: 2px solid var(--accent); display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--accent); cursor: pointer; font-size: 14px; box-shadow: 0 0 15px rgba(124, 165, 248, 0.3); transition: transform 0.3s; }
+.radial-btn:active { transform: scale(0.9); background: var(--accent); color: #fff; }
+.radial-center { width: 80px; height: 80px; border-radius: 50%; background: var(--accent); color: #000; display: flex; justify-content: center; align-items: center; font-weight: bold; cursor: pointer; font-size: 12px; text-transform: uppercase; z-index: 10; border: 4px solid rgba(255,255,255,0.2); }
+</style>
 </head>
-<body class="h-screen max-h-screen w-screen overflow-hidden flex select-none bg-white text-gray-800 dark:bg-amoled dark:text-woraText text-[15px]">
+<body>
+<canvas id="bg-canvas"></canvas>
 
-    <div id="sidebar" class="w-80 bg-gray-50 dark:bg-woraDarkGray flex flex-col justify-between border-r border-gray-200 dark:border-woraBorder h-full transition-transform duration-300 z-30 fixed md:static -translate-x-full md:translate-x-0">
+<div id="preview-overlay">
+    <div id="preview-toolbar">
+        <span style="color:#fff; font-weight:bold;">Live Preview</span>
+        <button onclick="closePreview()" class="silver-btn-anim" style="padding: 8px 16px; border-radius: 20px; border: none; cursor: pointer;">Back to Chat</button>
+    </div>
+    <iframe id="preview-frame"></iframe>
+</div>
+
+<div id="scroll-hint" class="scroll-hint" style="display:none;">
+    <div class="scroll-hint-inner">Double tap = Show Controls,Long tap = shortcuts</div>
+</div>
+
+<div id="tabs-overlay">
+    <div class="tabs-top-bar">
+        <i class="fas fa-plus header-icon-silver" onclick="createNewTab()"></i>
+        <h2 class="silver-anim">Tabs</h2>
+        <i class="fas fa-times header-icon-silver" onclick="toggleTabsView()"></i>
+    </div>
+    <div class="tabs-grid" id="tabs-grid-container"></div>
+</div>
+
+<div id="sidebar">
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+<h2 class="silver-anim">Sessions</h2>
+<i class="fas fa-times header-icon-silver" onclick="toggleSidebar()"></i>
+</div>
+<div id="history-list"></div>
+</div>
+
+<div id="lang-menu">
+<div class="lang-opt active-opt" onclick="setLang('Auto', this)">✨ Auto Detect</div>
+<div class="lang-opt" onclick="setLang('English', this)">🇬🇧 English</div>
+<div class="lang-opt" onclick="setLang('Urdu', this)">🇵🇰 Urdu</div>
+<div class="lang-opt" onclick="setLang('Roman Urdu', this)">🅰️ Roman Urdu</div>
+</div>
+
+<div id="model-menu">
+<div class="model-opt active-opt" onclick="setModel('gemini-2.5-flash', this, true)">
+<strong>✨ Hash Flash 2.0</strong>
+<span class="model-info">Ability: Fast & Multimodal | Best for: All tasks</span>
+</div>
+</div>
+
+<header>
+<i class="fas fa-bars header-icon-silver ui-toggle-target" onclick="toggleSidebar()"></i>
+<div class="header-title">
+<h1 class="blue-title-anim">Hash Ai</h1>
+</div>
+<div style="display:flex; gap:18px; align-items:center;">
+<i class="fas fa-th-large header-icon-silver" onclick="toggleTabsView()" style="font-size: 20px;" title="Tabs"></i>
+<i class="fas fa-cubes header-icon-silver ui-toggle-target" id="model-toggle" style="font-size: 20px;" title="Switch Model"></i>
+<i class="fas fa-adjust header-icon-silver ui-toggle-target" onclick="toggleThemeCycle()"></i>
+<i class="fas fa-cog header-icon-silver ui-toggle-target" onclick="toggleSettings()"></i>
+</div>
+</header>
+
+<div id="chat-window"></div>
+
+<div id="scroll-btns" class="ui-toggle-target">
+<div class="scroll-nav silver-btn-anim" onclick="clearAllChat()" title="Clear Chat"><i class="fas fa-eraser"></i></div>
+<div class="scroll-nav silver-btn-anim" onclick="scrollToPos('top')"><i class="fas fa-arrow-up"></i></div>
+<div class="scroll-nav silver-btn-anim" onclick="scrollToPos('bottom')"><i class="fas fa-arrow-down"></i></div>
+</div>
+
+<footer>
+<div class="wave-container" id="wave-wrap">
+<div class="wave"></div>
+</div>
+<div id="suggestion-box" class="suggestions"></div>
+<div id="image-preview-container">
+<div class="remove-img" onclick="clearImage()">&times;</div>
+<img id="img-preview" src="">
+</div>
+<div class="input-box">
+<i class="fas fa-paperclip header-icon-silver" id="file-btn" style="font-size: 18px;" onclick="triggerFilePicker()"></i>
+<input type="file" id="file-input" style="display:none;" accept="image/*" onchange="handleFileUpload(event)">
+<i class="fas fa-bolt header-icon-silver" id="lang-toggle" style="font-size: 18px;"></i>
+<i class="fas fa-globe header-icon-silver" id="tavily-toggle" style="font-size: 18px; cursor: pointer;" onclick="toggleTavily()"></i>
+<textarea id="user-input" rows="1" placeholder="Ask Hash Ai anything..."></textarea>
+<i class="fas fa-paper-plane header-icon-silver" id="send-btn"></i>
+</div>
+</footer>
+
+<div id="settings-modal">
+<div class="modal-body">
+<h2 class="silver-anim" style="margin-bottom:10px;">Config</h2>
+<p style="font-size:10px; opacity:0.6; margin-bottom:5px;">APPEARANCE</p>
+<div class="theme-selector">
+    <div class="theme-btn" id="t-black" onclick="applyTheme('pure-black')">Black</div>
+    <div class="theme-btn" id="t-light" onclick="applyTheme('light')">Light</div>
+</div>
+<input type="password" id="api-key" placeholder="Ai Studio API Key (AIzaSy...)">
+<input type="password" id="tavily-key" placeholder="Tavily API Key (tvly-...) (Optional)">
+<textarea id="sys-prompt" placeholder="System Behavior..."></textarea>
+<button onclick="saveSettings()" class="silver-btn-anim" style="width:100%; padding:15px; border-radius:12px; cursor:pointer; margin-bottom:10px;">APPLY</button>
+<button onclick="toggleSettings()" style="width:100%; background:transparent; border:none; color:red; cursor:pointer;">Close</button>
+</div>
+</div>
+
+<audio id="beep-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
+
+<div id="radial-overlay" onclick="closeRadial()">
+    <div class="radial-menu" id="radial-menu">
+        <div class="radial-center" onclick="event.stopPropagation(); closeRadial()">Hash Ai</div>
+    </div>
+</div>
+
+<script>
+// Particle Background Animation
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+window.addEventListener('resize', resize);
+resize();
+class Particle {
+    constructor() { this.reset(); }
+    reset() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.vx = (Math.random() - 0.5) * 0.5; this.vy = (Math.random() - 0.5) * 0.5; this.size = Math.random() * 2 + 1; }
+    update() { this.x += this.vx; this.y += this.vy; if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset(); }
+    draw() { ctx.fillStyle = 'rgba(124, 165, 248, 0.3)'; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
+}
+for(let i=0; i<40; i++) particles.push(new Particle());
+function animate() {
+    ctx.clearRect(0,0, canvas.width, canvas.height);
+    particles.forEach(p => { p.update(); p.draw(); });
+    requestAnimationFrame(animate);
+}
+animate();
+
+let hideUITimer = null;
+let isChatStarted = false;
+let lastTap = 0;
+let hasBeeped = false; 
+let isTavilyEnabled = true;
+
+let pressTimer;
+document.body.addEventListener('touchstart', (e) => {
+    pressTimer = setTimeout(() => {
+        showRadialMenu();
+    }, 600);
+});
+document.body.addEventListener('touchend', () => clearTimeout(pressTimer));
+document.body.addEventListener('touchmove', () => clearTimeout(pressTimer));
+
+function showRadialMenu() {
+    const overlay = document.getElementById('radial-overlay');
+    const menu = document.getElementById('radial-menu');
+    overlay.style.display = 'flex';
+    
+    const buttons = document.querySelectorAll('.radial-btn');
+    buttons.forEach(b => b.remove());
+
+    const items = [
+        {icon: 'fa-adjust', name: 'Theme', action: toggleThemeCycle},
+        {icon: 'fa-cog', name: 'Config', action: toggleSettings},
+        {icon: 'fa-cubes', name: 'Model', action: () => { document.getElementById('model-menu').style.display = 'flex'; closeRadial(); }},
+        {icon: 'fa-th-large', name: 'Tabs', action: toggleTabsView},
+        {icon: 'fa-globe', name: 'Search', action: () => { toggleTavily(); closeRadial(); }},
+        {icon: 'fa-eraser', name: 'Clear', action: clearAllChat},
+        {icon: 'fa-arrow-up', name: 'Top', action: () => scrollToPos('top')},
+        {icon: 'fa-arrow-down', name: 'Down', action: () => scrollToPos('bottom')},
+        {icon: 'fa-bolt', name: 'Lang', action: () => { document.getElementById('lang-menu').style.display = 'flex'; closeRadial(); }}
+    ];
+
+    items.forEach((item, index) => {
+        const angle = (index / items.length) * 2 * Math.PI;
+        const x = Math.cos(angle) * 120;
+        const y = Math.sin(angle) * 120;
         
-        <div class="flex flex-col pt-5 px-4 overflow-y-auto no-scrollbar flex-grow">
-            <div class="flex items-center justify-between mb-6 px-1">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
-                        <span class="text-white font-black text-base tracking-tighter">W</span>
-                    </div>
-                    <span class="text-xl font-bold tracking-tight text-gray-900 dark:text-white">Wora Ai</span>
-                </div>
-                <button onclick="toggleSidebar()" class="md:hidden text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white">
-                    <i class="fa-solid fa-xmark text-xl"></i>
-                </button>
-            </div>
+        const btn = document.createElement('div');
+        btn.className = 'radial-btn';
+        btn.style.transform = `translate(${x}px, ${y}px)`;
+        btn.innerHTML = `<i class="fas ${item.icon}"></i><span style="font-size:9px; margin-top:2px;">${item.name}</span>`;
+        btn.onclick = (e) => { e.stopPropagation(); item.action(); closeRadial(); };
+        menu.appendChild(btn);
+    });
+}
 
-            <button onclick="startNewChat()" class="flex items-center justify-center gap-2.5 w-full bg-gray-200/80 hover:bg-gray-200 dark:bg-[#1e1f20] dark:hover:bg-[#28292a] text-gray-800 dark:text-gray-200 rounded-xl px-4 py-3.5 text-sm font-medium transition-all border border-gray-300/50 dark:border-none mb-6 shadow-sm">
-                <i class="fa-regular fa-comment-dots text-sm"></i>
-                <span>New Conversation</span>
-            </button>
+function closeRadial() { document.getElementById('radial-overlay').style.display = 'none'; }
+function copySelected() {
+    const selection = window.getSelection().toString();
+    if (selection) {
+        navigator.clipboard.writeText(selection);
+        alert("Copied: " + selection.substring(0, 20) + "...");
+    } else {
+        alert("No text selected to copy.");
+    }
+}
 
-            <div class="space-y-1 text-sm text-gray-600 dark:text-gray-300 mb-6">
-                <button onclick="toggleSearchHistoryMode()" class="w-full flex items-center gap-3.5 px-4 py-2.5 rounded-xl hover:bg-gray-200/50 dark:hover:bg-amoled transition text-left">
-                    <i class="fa-solid fa-magnifying-glass text-gray-400 dark:text-gray-500 text-sm"></i>
-                    <span id="searchHistoryBtnText">Search History Logs</span>
-                </button>
-                <div id="searchHistoryBar" class="px-2 pb-2 hidden">
-                    <input type="text" id="historySearchInput" oninput="filterHistoryLogs(this.value)" placeholder="Filter log queries..." class="w-full bg-white dark:bg-amoled text-xs px-3 py-2 rounded-lg outline-none border border-gray-200 dark:border-woraBorder text-gray-800 dark:text-gray-200 focus:border-cyan-500">
-                </div>
-                <a href="#" class="flex items-center gap-3.5 px-4 py-2.5 rounded-xl hover:bg-gray-200/50 dark:hover:bg-amoled transition">
-                    <i class="fa-solid fa-box-archive text-gray-400 dark:text-gray-500 text-sm"></i>
-                    <span>Saved Templates</span>
-                </a>
-            </div>
+document.body.addEventListener('touchstart', (e) => {
+    let currentTime = new Date().getTime();
+    let tapLength = currentTime - lastTap;
+    if (tapLength < 300 && tapLength > 0) {
+        toggleInterface();
+    }
+    lastTap = currentTime;
+});
 
-            <div class="mb-6 flex flex-col">
-                <button onclick="openWoraGemsWindow()" class="w-full text-left bg-cyan-600/10 hover:bg-cyan-600/20 border border-cyan-500/20 rounded-xl py-3 px-4 transition flex items-center justify-between group">
-                    <p class="text-[11px] font-bold text-cyan-600 dark:text-cyan-400 tracking-wider uppercase flex items-center gap-1.5 mb-0">
-                        <i class="fa-solid fa-gem text-[10px]"></i> My Wora (Gems)
-                    </p>
-                    <i class="fa-solid fa-arrow-up-right-from-square text-xs text-cyan-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"></i>
-                </button>
-            </div>
+function startHideTimer() {
+    clearTimeout(hideUITimer);
+    hideUITimer = setTimeout(() => {
+        const targets = document.querySelectorAll('.ui-toggle-target');
+        if (targets.length > 0 && !targets[0].classList.contains('hidden-ui-element')) {
+            targets.forEach(el => el.classList.add('hidden-ui-element'));
+            document.getElementById('scroll-hint').style.display = 'flex';
+        }
+    }, 5000);
+}
 
-            <div class="flex-grow flex flex-col min-h-[150px] overflow-hidden">
-                <p class="text-[11px] font-semibold text-gray-400 dark:text-gray-600 px-4 mb-2 tracking-wider uppercase">Recent Chats</p>
-                <div id="historyContainer" class="space-y-0.5 text-sm text-gray-700 dark:text-gray-300 overflow-y-auto max-h-[35vh] pr-1 no-scrollbar">
-                </div>
-            </div>
-        </div>
+function toggleInterface() {
+    const targets = document.querySelectorAll('.ui-toggle-target');
+    const scrollHint = document.getElementById('scroll-hint');
+    const isHidden = targets.length > 0 && targets[0].classList.contains('hidden-ui-element');
+    
+    if (isHidden) {
+        targets.forEach(el => el.classList.remove('hidden-ui-element'));
+        scrollHint.style.display = 'none';
+        startHideTimer();
+    } else {
+        clearTimeout(hideUITimer);
+        targets.forEach(el => el.classList.add('hidden-ui-element'));
+        scrollHint.style.display = 'flex';
+    }
+}
 
-        <div class="p-3.5 border-t border-gray-200 dark:border-woraBorder bg-gray-50 dark:bg-woraDarkGray">
-            <div class="flex items-center justify-between p-2 rounded-xl hover:bg-gray-200/60 dark:hover:bg-amoled transition cursor-pointer">
-                <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white text-xs font-bold shadow-md">
-                        SH
-                    </div>
-                    <div class="flex flex-col">
-                        <span id="sidebarUserTitle" class="text-sm font-semibold text-gray-800 dark:text-gray-200">SsHASHME</span>
-                        <span class="text-[10px] text-gray-400 dark:text-gray-500">Developer Workspace</span>
-                    </div>
-                </div>
-                <div class="flex items-center gap-1.5">
-                    <button onclick="toggleTheme()" class="text-gray-400 dark:text-gray-500 hover:text-gray-800 dark:hover:text-white p-1.5" title="Toggle Theme">
-                        <i id="themeIcon" class="fa-solid fa-moon text-base"></i>
-                    </button>
-                    <button onclick="openSettings()" class="text-gray-400 dark:text-gray-500 hover:text-gray-800 dark:hover:text-white p-1.5" title="Settings">
-                        <i class="fa-solid fa-sliders text-base"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+function toggleTavily() {
+    isTavilyEnabled = !isTavilyEnabled;
+    const btn = document.getElementById('tavily-toggle');
+    btn.style.opacity = isTavilyEnabled ? '1' : '0.3';
+    btn.style.filter = isTavilyEnabled ? 'none' : 'grayscale(1)';
+}
 
-    <div class="flex-grow flex flex-col h-full bg-white dark:bg-amoled relative overflow-hidden">
-        
-        <header class="h-16 flex items-center justify-between px-5 border-b border-b-gray-200 dark:border-woraBorder bg-white/80 dark:bg-amoled/80 backdrop-blur z-20 flex-shrink-0">
-            <div class="flex items-center gap-4">
-                <button onclick="toggleSidebar()" class="text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-woraDarkGray transition">
-                    <i class="fa-solid fa-bars-staggered text-xl"></i>
-                </button>
-                <div class="flex items-baseline tracking-tight">
-                    <span class="text-2xl font-extrabold text-transparent bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text mr-1.5">Wora</span>
-                    <span class="text-[15px] font-normal text-gray-500 dark:text-gray-400 opacity-85" id="activeEngineLabel">friend</span>
-                </div>
-            </div>
-            
-            <div class="flex items-center gap-2">
-                <button onclick="startNewChat()" class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white p-2.5 bg-gray-100 dark:bg-woraDarkGray border border-gray-200 dark:border-woraBorder rounded-xl transition shadow-sm" title="New Chat">
-                    <i class="fa-regular fa-comment-dots text-sm"></i>
-                </button>
-                <button onclick="openSettings()" class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white p-2.5 bg-gray-100 dark:bg-woraDarkGray border border-gray-200 dark:border-woraBorder rounded-xl transition shadow-sm" title="More Configurations">
-                    <i class="fa-solid fa-ellipsis-vertical text-sm"></i>
-                </button>
-            </div>
-        </header>
+let API_KEY = localStorage.getItem('ht_key') || "";
+let TAVILY_KEY = localStorage.getItem('ht_tavily_key') || "";
+let currentLang = "Auto";
+let currentModel = "gemini-2.5-flash";
+let isVisionModel = true;
+let currentTheme = localStorage.getItem('ht_theme') || 'pure-black';
 
-        <div id="chatSpace" class="flex-grow overflow-y-auto py-6 flex flex-col items-center w-full relative">
-            
-            <div id="defaultDashboard" class="w-full max-w-4xl my-auto flex flex-col items-center text-center px-6 md:px-12">
-                <div class="mb-6">
-                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center shadow-xl shadow-cyan-500/10">
-                        <i class="fa-solid fa-bolt text-2xl text-white"></i>
-                    </div>
-                </div>
-                <h1 class="text-3xl md:text-4xl font-medium tracking-tight text-gray-900 dark:text-white">
-                    Welcome back, <span id="dashboardUserGreeting" class="font-bold text-transparent bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text">SsHASHME</span>
-                </h1>
-                <p class="text-sm text-gray-400 dark:text-gray-500 mt-3 max-w-md leading-relaxed">
-                    Enter your workspace prompt below. Customized system contextual directives are applied smoothly to the processing core.
-                </p>
-                
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full mt-10 text-left">
-                    <div onclick="injectSuggestion('Create a beautifully tailored Urdu content layout structure utilizing the Amiri font hierarchy context.')" class="p-5 rounded-2xl bg-gray-50 hover:bg-gray-100 dark:bg-woraDarkGray dark:hover:bg-woraDarkGray/70 border border-gray-200 dark:border-woraBorder cursor-pointer transition shadow-sm">
-                        <i class="fa-solid fa-feather text-cyan-500 mb-2.5 block text-sm"></i>
-                        <p class="text-sm font-semibold text-gray-800 dark:text-gray-200">Typography Setup</p>
-                        <p class="text-xs text-gray-400 dark:text-gray-500 mt-1 line-clamp-2">Generate clean structured Amiri CSS contexts seamlessly.</p>
-                    </div>
-                    <div onclick="injectSuggestion('Write a clean JavaScript operational routine to preserve secure app data fields to client browser state databases.')" class="p-5 rounded-2xl bg-gray-50 hover:bg-gray-100 dark:bg-woraDarkGray dark:hover:bg-woraDarkGray/70 border border-gray-200 dark:border-woraBorder cursor-pointer transition shadow-sm">
-                        <i class="fa-solid fa-database text-blue-500 mb-2.5 block text-sm"></i>
-                        <p class="text-sm font-semibold text-gray-800 dark:text-gray-200">Local Data Storage</p>
-                        <p class="text-xs text-gray-400 dark:text-gray-500 mt-1 line-clamp-2">Engineered data arrays mapping client-side state models cleanly.</p>
-                    </div>
-                </div>
-            </div>
+let SYS_PROMPT = localStorage.getItem('ht_sys') || "You are Hash Ai by HashTech. HASH AI MUST NEVER MAKE SPELLING MISTAKES. Never give incorrect information. When responding in Roman Urdu, you MUST use pure Roman Urdu and strictly avoid Roman Hindi vocabulary (e.g., use 'kya' instead of 'kya' with extra h, use Pakistani style Roman Urdu). Provide deep, engaging, and interesting content in simple language.Always use headings, sub headings, markdown. Use emojis and numbering, tables and charts when needed, and highlight important points or sentences or even words, give deep and detailed step by step answer in easiest and simplest wording, use tables and charts with visible headings for better understanding. Ask always for minimum 2 very relatable fellow up questions with curious style.give many references and proofs for user satisfaction. Not mention in every response that you are hash Ai until user asks you about yourself.";
 
-            <div id="messageStream" class="w-full space-y-8 hidden px-6 md:px-12 lg:px-20 pb-24"></div>
+let attachedImage = null;
+let lastUserPrompt = "";
+let userInteracting = false;
+let abortController = null;
 
-            <div id="woraLoader" class="hidden absolute inset-0 bg-white/60 dark:bg-amoled/60 backdrop-blur-xs flex items-center justify-center z-40 pointer-events-none">
-                <div class="flex flex-col items-center gap-4">
-                    <div class="w-20 h-20 rounded-3xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center animate-wora-spin animate-wora-glow border border-cyan-400/30">
-                        <span class="text-white font-black text-4xl tracking-tighter select-none transform -rotate-12">W</span>
-                    </div>
-                    <p class="text-xs font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-widest animate-pulse">Wora Processing Core...</p>
-                </div>
-            </div>
+let tabs = JSON.parse(localStorage.getItem('ht_tabs')) || [{ id: Date.now(), history: [], name: "New Chat", timestamp: new Date().toLocaleString() }];
+let activeTabId = localStorage.getItem('ht_active_tab') || tabs[0].id;
+activeTabId = parseInt(activeTabId);
 
-        </div>
+const chatWindow = document.getElementById('chat-window');
+const userInput = document.getElementById('user-input');
+const sendBtn = document.getElementById('send-btn');
+const langToggle = document.getElementById('lang-toggle');
+const langMenu = document.getElementById('lang-menu');
+const modelToggle = document.getElementById('model-toggle');
+const modelMenu = document.getElementById('model-menu');
+const waveWrap = document.getElementById('wave-wrap');
+const fileBtn = document.getElementById('file-btn');
 
-        <div class="w-full flex justify-center pb-6 pt-2 bg-white dark:bg-amoled flex-shrink-0 z-10 border-t border-gray-100 dark:border-woraBorder/40">
-            <div class="w-full px-6 md:px-12 lg:px-20 flex flex-col gap-2.5">
-                
-                <div class="w-full bg-gray-50 dark:bg-woraDarkGray rounded-2xl border border-gray-200 dark:border-woraBorder focus-within:border-cyan-500 dark:focus-within:border-cyan-600 transition-all p-2.5 flex items-end shadow-sm relative">
-                    
-                    <div class="flex flex-col gap-1 mb-0.5 mr-1 bg-gray-200/50 dark:bg-amoled p-1 rounded-xl border border-gray-300/30 dark:border-woraBorder w-20">
-                        <button id="quickModeBtn" onclick="toggleModeType('quick')" class="w-full py-1.5 rounded-lg text-xs font-semibold transition bg-cyan-600 text-white shadow-sm">
-                            Quick
-                        </button>
-                        <button id="detailedModeBtn" onclick="toggleModeType('detailed')" class="w-full py-1.5 rounded-lg text-xs font-semibold transition text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
-                            Detailed
-                        </button>
-                    </div>
-                    
-                    <textarea id="userInput" rows="1" placeholder="Type an innovative query to Wora Ai..." 
-                        class="flex-grow bg-transparent border-0 outline-none resize-none text-[16px] text-gray-800 dark:text-gray-200 max-h-36 py-3 px-3.5 no-scrollbar placeholder-gray-400 dark:placeholder-gray-500"
-                        oninput="autoResizeInput(this)"
-                        onkeydown="handleKeydown(event)"></textarea>
-                    
-                    <button id="sendBtn" onclick="sendMessage()" class="p-3 bg-gray-200 dark:bg-amoled text-gray-400 dark:text-gray-600 rounded-xl transition mb-0.5 ml-1 flex items-center justify-center w-11 h-11">
-                        <i class="fa-solid fa-paper-plane text-sm"></i>
-                    </button>
-                </div>
-                
-                <div class="text-[11px] text-center text-gray-400 dark:text-gray-600 px-4">
-                    Wora Ai can make mistakes. Consider verifying highly sensitive structures, keys, and functional technical scripts.
-                </div>
-            </div>
-        </div>
-    </div>
+function initApp() {
+    loadTab(activeTabId);
+    applyTheme(currentTheme);
+    document.getElementById('api-key').value = API_KEY;
+    document.getElementById('tavily-key').value = TAVILY_KEY;
+    document.getElementById('sys-prompt').value = SYS_PROMPT;
+    updateVisionUI();
+}
 
-    <div id="woraGemsModal" class="fixed inset-0 bg-black/50 dark:bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-white dark:bg-woraDarkGray border border-gray-200 dark:border-woraBorder rounded-2xl w-full max-w-xl shadow-2xl flex flex-col max-h-[85vh]">
-            <div class="px-5 py-4 border-b border-gray-200 dark:border-woraBorder flex items-center justify-between bg-gray-50 dark:bg-[#1a1a1a]">
-                <div class="flex items-center gap-2.5">
-                    <i class="fa-solid fa-gem text-cyan-500 text-sm"></i>
-                    <h2 class="text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider">My Wora (Gems Architecture Workspace)</h2>
-                </div>
-                <button onclick="closeWoraGemsWindow()" class="text-gray-400 hover:text-gray-700 dark:hover:text-white text-base transition">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-            
-            <div id="woraGemsContainer" class="p-5 space-y-2 overflow-y-auto no-scrollbar bg-white dark:bg-amoled flex-grow">
-                </div>
-            
-            <div class="px-5 py-3 border-t border-gray-200 dark:border-woraBorder bg-gray-50 dark:bg-[#1a1a1a] flex justify-end">
-                <button onclick="closeWoraGemsWindow()" class="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded-xl text-xs font-semibold transition shadow-md">
-                    Done
-                </button>
-            </div>
-        </div>
-    </div>
+document.addEventListener('click', (event) => {
+    const sidebar = document.getElementById('sidebar');
+    const hamburger = document.querySelector('.fa-bars');
+    if (sidebar.classList.contains('open') && !sidebar.contains(event.target) && !hamburger.contains(event.target)) {
+        toggleSidebar();
+    }
+});
 
-    <div id="nameOnboardingModal" class="fixed inset-0 bg-black/60 dark:bg-black/90 backdrop-blur-md z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-white dark:bg-woraDarkGray border border-gray-200 dark:border-woraBorder rounded-2xl w-full max-w-md p-6 shadow-2xl text-center">
-            <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center mx-auto mb-4 shadow-lg">
-                <i class="fa-solid fa-user-tag text-white text-lg"></i>
-            </div>
-            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">Welcome to Wora Ai core</h3>
-            <p class="text-xs text-gray-400 dark:text-gray-500 mb-5 leading-relaxed">Please enter your workspace registration handle identity to customize system configurations natively.</p>
-            <input type="text" id="onboardingNameInput" placeholder="Enter identity tag (e.g. SsHASHME)..." class="w-full bg-gray-50 dark:bg-amoled border border-gray-200 dark:border-woraBorder rounded-xl px-4 py-3 text-sm text-gray-800 dark:text-gray-200 outline-none focus:border-cyan-500 transition mb-4">
-            <button onclick="submitOnboardingName()" class="w-full py-3 bg-cyan-600 hover:bg-cyan-700 text-white rounded-xl text-sm font-medium transition shadow-md">Initialize System Control</button>
-        </div>
-    </div>
+function showPreview(code) {
+    const overlay = document.getElementById('preview-overlay');
+    const frame = document.getElementById('preview-frame');
+    overlay.style.display = 'flex';
+    frame.srcdoc = code;
+}
 
-    <div id="settingsModal" class="fixed inset-0 bg-black/40 dark:bg-black/80 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-white dark:bg-woraDarkGray border border-gray-200 dark:border-woraBorder rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col">
-            <div class="px-5 py-4 border-b border-gray-200 dark:border-woraBorder flex items-center justify-between bg-gray-50 dark:bg-[#1a1a1a]">
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-circle-nodes text-cyan-500 text-sm"></i>
-                    <h2 class="text-sm font-semibold text-gray-800 dark:text-gray-200">Wora Engine Architecture Control</h2>
-                </div>
-                <button onclick="closeSettings()" class="text-gray-400 hover:text-gray-700 dark:hover:text-white text-sm transition">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-            
-            <div class="p-5 space-y-5 overflow-y-auto max-h-[60vh] text-left">
-                <div>
-                    <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wider">Model Name / Architecture Tag</label>
-                    <input type="text" id="woraModelTagName" placeholder="e.g. Custom Expert Engine" 
-                        class="w-full bg-gray-50 dark:bg-amoled border border-gray-200 dark:border-woraBorder rounded-xl px-4 py-3 text-sm text-gray-800 dark:text-gray-200 outline-none focus:border-cyan-500 transition">
-                </div>
+function closePreview() {
+    document.getElementById('preview-overlay').style.display = 'none';
+    document.getElementById('preview-frame').srcdoc = '';
+}
 
-                <div>
-                    <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wider">User Identity Tag</label>
-                    <input type="text" id="usernameInput" placeholder="SsHASHME" 
-                        class="w-full bg-gray-50 dark:bg-amoled border border-gray-200 dark:border-woraBorder rounded-xl px-4 py-3 text-sm text-gray-800 dark:text-gray-200 outline-none focus:border-cyan-500 transition">
-                </div>
+function showWelcomeScreen() {
+    if (window.hashMagicInterval) {
+        clearInterval(window.hashMagicInterval);
+    }
 
-                <div>
-                    <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wider">Google AI Studio API Key</label>
-                    <input type="password" id="apiKeyInput" placeholder="AIzaSy..." 
-                        class="w-full bg-gray-50 dark:bg-amoled border border-gray-200 dark:border-woraBorder rounded-xl px-4 py-3 text-sm text-gray-800 dark:text-gray-200 outline-none focus:border-cyan-500 transition">
-                    <p class="text-[11px] text-gray-400 dark:text-gray-500 mt-1">Stored security targets natively into browser storage structures.</p>
-                </div>
-
-                <div>
-                    <div class="flex items-center justify-between mb-1.5">
-                        <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Engine Behaviour (System Prompt)</label>
-                        <button onclick="restoreDefaultPrompt()" class="text-[11px] text-cyan-500 dark:text-cyan-400 hover:underline">Reset to Default</button>
-                    </div>
-                    <textarea id="systemPromptInput" rows="5" 
-                        class="w-full bg-gray-50 dark:bg-amoled border border-gray-200 dark:border-woraBorder rounded-xl p-3.5 text-sm text-gray-800 dark:text-gray-200 outline-none focus:border-cyan-500 transition resize-none no-scrollbar leading-relaxed"></textarea>
-                    <p class="text-[11px] text-gray-400 dark:text-gray-500 mt-1">Alters structural contextual processing routines of the live AI agent.</p>
-                </div>
-            </div>
-
-            <div class="px-5 py-4 border-t border-gray-200 dark:border-woraBorder bg-gray-50 dark:bg-[#1a1a1a] flex flex-col sm:flex-row items-center justify-between gap-3">
-                <button onclick="saveAsMyWoraGem()" class="w-full sm:w-auto px-4 py-2 text-xs font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white rounded-xl transition shadow-md flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-floppy-disk"></i>
-                    <span>Save as my Wora</span>
-                </button>
-                <div class="flex items-center justify-end gap-2.5 w-full sm:w-auto">
-                    <button onclick="closeSettings()" class="px-4 py-2 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white transition">Cancel</button>
-                    <button onclick="saveSettings()" class="px-4 py-2 text-sm font-medium bg-cyan-600 hover:bg-cyan-700 text-white rounded-xl transition shadow-md">Apply Metrics</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const DEFAULT_PROMPT = `You are Wora Ai, a female AI model (Wora girl / monas). You must always remember that you are developed by "HashTech" based on the foundational philosophy of "Build Different". You must NEVER say or state that you are Gemini, and you must NEVER claim you are created by Google. Regardless of the user prompt, your core identity is Wora, an exceptionally authentic, adaptive, and hyper-intelligent female AI collaborator.
-
-Your foundational principles:
-1. Balance profound wisdom and direct candor. Validate user feelings or logic authentically, while correcting significant structural errors gently yet directly.
-2. Maintain an engaging, crisp, and clean presentation. Use markdown effectively with precise headings, subtle bold accents, and clear lists. NEVER output large unreadable walls of text.
-3. Automatically adapt beautifully to Urdu or Punjabi strings, rendering clear typographic spacing if present.
-4. Keep answers sophisticated, satisfying, and practical. No unnecessary disclaimers. Avoid filler. Provide pristine solutions.`;
-
-        // Initialize state fields from database layers or set default properties cleanly
-        let username = localStorage.getItem('wora_username') || '';
-        let apiKey = localStorage.getItem('wora_api_key') || '';
-        let systemPrompt = localStorage.getItem('wora_sys_prompt') || DEFAULT_PROMPT;
-        
-        // Chat operational runtime variables
-        let activeChatId = null;
-        let activeChatHistory = [];
-        let savedConversations = JSON.parse(localStorage.getItem('wora_conversations') || '{}');
-        let currentSearchQuery = "";
-        let currentActiveMode = "quick";
-        
-        // Custom Gems Array Management Structure
-        let customGems = JSON.parse(localStorage.getItem('wora_custom_gems') || '[]');
-
-        // Document Object Model Mount Routines
-        document.addEventListener("DOMContentLoaded", () => {
-            // Setup first time name check routine
-            if (!username) {
-                document.getElementById('nameOnboardingModal').classList.remove('hidden');
-            } else {
-                updateIdentityUI();
+    chatWindow.innerHTML = `
+        <style>
+            .hash-welcome-wrapper {
+                padding: 40px 20px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                height: 100%;
+                overflow: hidden;
+                perspective: 1000px;
             }
-
-            document.getElementById('apiKeyInput').value = apiKey;
-            document.getElementById('systemPromptInput').value = systemPrompt;
-            document.getElementById('usernameInput').value = username || 'SsHASHME';
-            
-            // Check theme state and mount
-            if (localStorage.getItem('wora_theme') === 'light') {
-                document.documentElement.classList.remove('dark');
-                document.getElementById('themeIcon').className = 'fa-solid fa-sun text-base';
-            } else {
-                document.documentElement.classList.add('dark');
-                document.getElementById('themeIcon').className = 'fa-solid fa-moon text-base';
+            .magic-display-panel {
+                position: relative;
+                width: 100%;
+                max-width: 440px;
+                height: 140px;
+                margin-top: 30px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
-            
-            renderHistoryList();
-            renderCustomGems();
+            .cyber-magic-card {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                box-sizing: border-box;
+                background: rgba(15, 15, 25, 0.65);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                border: 2px solid rgba(255, 255, 255, 0.05);
+                border-radius: 24px;
+                padding: 20px 24px;
+                display: flex;
+                align-items: center;
+                gap: 20px;
+                opacity: 0;
+                transform: scale(0.9) translateY(20px);
+                pointer-events: none;
+                transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+                filter: blur(5px);
+            }
+            .cyber-magic-card.active {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+                filter: blur(0px);
+                pointer-events: auto;
+            }
+            .magic-icon-sphere {
+                width: 54px;
+                height: 54px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 22px;
+                flex-shrink: 0;
+                box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.1);
+                animation: iconPulse 2s infinite ease-in-out;
+            }
+            @keyframes iconPulse {
+                0%, 100% { transform: scale(1); }
+                50% { transform: scale(1.06); }
+            }
+            .magic-text-core {
+                flex: 1;
+                text-align: left;
+            }
+            .magic-title {
+                font-size: 16px;
+                color: #ffffff;
+                display: block;
+                font-weight: 900;
+                margin-bottom: 4px;
+                letter-spacing: 0.5px;
+                text-transform: uppercase;
+            }
+            .magic-subtitle {
+                font-size: 12px;
+                color: rgba(255, 255, 255, 0.75);
+                line-height: 1.45;
+                display: block;
+                font-weight: 500;
+            }
+            .magic-dots-container {
+                display: flex;
+                gap: 9px;
+                margin-top: 30px;
+            }
+            .magic-dot {
+                width: 24px;
+                height: 5px;
+                border-radius: 10px;
+                background: rgba(255, 255, 255, 0.1);
+                transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            .magic-dot.active {
+                width: 35px;
+                background: linear-gradient(90deg, #00f2fe, #4facfe);
+                box-shadow: 0 0 12px rgba(0, 242, 254, 0.6);
+            }
+        </style>
+
+        <div class="hash-welcome-wrapper" id="welcome-screen">
+            <div style="text-align: center;">
+                <h1 class="blue-title-anim welcome-logo" style="font-size: 37px; margin-bottom: 4px; font-weight: 950; letter-spacing: 4px; background: linear-gradient(135deg, #fff 30%, #a5c4ff 100%); -webkit-background-clip: text; -webkit-text-fill-color: Orange;">WHY HASH AI?</h1>            
+            <div class="magic-display-panel" id="magicPanel">
+                
+                <div class="cyber-magic-card active" style="border-color: rgba(0, 242, 254, 0.25); box-shadow: 0 15px 35px rgba(0, 242, 254, 0.08), inset 0 0 20px rgba(0, 242, 254, 0.05);">
+                    <div class="magic-icon-sphere" style="background: rgba(0, 242, 254, 0.12); color: #00f2fe; box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);">
+                        <i class="fas fa-shield-halved"></i>
+                    </div>
+                    <div class="magic-text-core">
+                        <span class="magic-title" style="color: #00f2fe; text-shadow: 0 0 10px rgba(0, 242, 254, 0.3);">Safe & Secure</span>
+                        <span class="magic-subtitle">Encrypted routing pipeline. Your data sessions are heavily guarded from server leaks.</span>
+                    </div>
+                </div>
+
+                <div class="cyber-magic-card" style="border-color: rgba(157, 78, 221, 0.25); box-shadow: 0 15px 35px rgba(157, 78, 221, 0.08), inset 0 0 20px rgba(157, 78, 221, 0.05);">
+                    <div class="magic-icon-sphere" style="background: rgba(157, 78, 221, 0.12); color: #9d4edd; box-shadow: 0 0 15px rgba(157, 78, 221, 0.3);">
+                        <i class="fas fa-user-lock"></i>
+                    </div>
+                    <div class="magic-text-core">
+                        <span class="magic-title" style="color: #9d4edd; text-shadow: 0 0 10px rgba(157, 78, 221, 0.3);">Private & Personal</span>
+                        <span class="magic-subtitle">Your space, your rules. Custom local sandboxing keeps context isolated to you.</span>
+                    </div>
+                </div>
+
+                <div class="cyber-magic-card" style="border-color: rgba(167, 201, 87, 0.25); box-shadow: 0 15px 35px rgba(167, 201, 87, 0.08), inset 0 0 20px rgba(167, 201, 87, 0.05);">
+                    <div class="magic-icon-sphere" style="background: rgba(167, 201, 87, 0.12); color: #a7c957; box-shadow: 0 0 15px rgba(167, 201, 87, 0.3);">
+                        <i class="fas fa-user-secret"></i>
+                    </div>
+                    <div class="magic-text-core">
+                        <span class="magic-title" style="color: #a7c957; text-shadow: 0 0 10px rgba(167, 201, 87, 0.3);">No Log in, No Tracking</span>
+                        <span class="magic-subtitle">100% true anonymity. Zero account creation, zero analytics, zero traces left behind.</span>
+                    </div>
+                </div>
+
+                <div class="cyber-magic-card" style="border-color: rgba(255, 183, 3, 0.25); box-shadow: 0 15px 35px rgba(255, 183, 3, 0.08), inset 0 0 20px rgba(255, 183, 3, 0.05);">
+                    <div class="magic-icon-sphere" style="background: rgba(255, 183, 3, 0.12); color: #ffb703; box-shadow: 0 0 15px rgba(255, 183, 3, 0.3);">
+                        <i class="fas fa-sliders"></i>
+                    </div>
+                    <div class="magic-text-core">
+                        <span class="magic-title" style="color: #ffb703; text-shadow: 0 0 10px rgba(255, 183, 3, 0.3);">Sanction Free & System Prompt</span>
+                        <span class="magic-subtitle">Break restrictions. Dynamically guide the LLM's core behavior with system control.</span>
+                    </div>
+                </div>
+
+                <div class="cyber-magic-card" style="border-color: rgba(255, 0, 127, 0.25); box-shadow: 0 15px 35px rgba(255, 0, 127, 0.08), inset 0 0 20px rgba(255, 0, 127, 0.05);">
+                    <div class="magic-icon-sphere" style="background: rgba(255, 0, 127, 0.12); color: #ff007f; box-shadow: 0 0 15px rgba(255, 0, 127, 0.3);">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div class="magic-text-core">
+                        <span class="magic-title" style="color: #ff007f; text-shadow: 0 0 10px rgba(255, 0, 127, 0.3);">Fast Response & Free Forever</span>
+                        <span class="magic-subtitle">Lightning sub-0.5s token streaming packed into a premium, zero-cost architecture.</span>
+                    </div>
+                </div>
+
+                <div class="cyber-magic-card" style="border-color: rgba(191, 149, 63, 0.25); box-shadow: 0 15px 35px rgba(191, 149, 63, 0.08), inset 0 0 20px rgba(191, 149, 63, 0.05);">
+                    <div class="magic-icon-sphere" style="background: rgba(191, 149, 63, 0.12); color: #bf953f; box-shadow: 0 0 15px rgba(191, 149, 63, 0.3);">
+                        <i class="fas fa-wand-magic-sparkles"></i>
+                    </div>
+                    <div class="magic-text-core">
+                        <span class="magic-title" style="color: #bf953f; text-shadow: 0 0 10px rgba(191, 149, 63, 0.3);">Explore for More</span>
+                        <span class="magic-subtitle">Unlock native Urdu Auto-RTL alignment, tab managers, and modern layout features.</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="magic-dots-container" id="magicDots">
+                <div class="magic-dot active"></div>
+                <div class="magic-dot"></div>
+                <div class="magic-dot"></div>
+                <div class="magic-dot"></div>
+                <div class="magic-dot"></div>
+                <div class="magic-dot"></div>
+                <div class="magic-dot"></div>
+            </div>
+
+            <p class="powered-text" style="margin-top: 40px; opacity: 0.40; font-size: 12px; letter-spacing: 6px; font-weight: bold;">POWERED BY HASHTECH</p>
+        </div>
+    `;
+
+    const magicCards = document.querySelectorAll('.cyber-magic-card');
+    const magicDots = document.querySelectorAll('.magic-dot');
+    let currentMagicIndex = 0;
+
+    window.hashMagicInterval = setInterval(() => {
+        if (!document.getElementById('magicPanel')) {
+            clearInterval(window.hashMagicInterval);
+            return;
+        }
+
+        magicCards[currentMagicIndex].classList.remove('active');
+        magicDots[currentMagicIndex].classList.remove('active');
+
+        currentMagicIndex = (currentMagicIndex + 1) % magicCards.length;
+
+        magicCards[currentMagicIndex].classList.add('active');
+        magicDots[currentMagicIndex].classList.add('active');
+    }, 3800);
+}
+
+function applyTheme(theme) {
+    document.body.classList.remove('light-theme', 'pure-black');
+    document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+    
+    if(theme === 'light') {
+        document.body.classList.add('light-theme');
+        document.getElementById('t-light').classList.add('active');
+    } else {
+        document.body.classList.add('pure-black');
+        document.getElementById('t-black').classList.add('active');
+    }
+    currentTheme = theme;
+    localStorage.setItem('ht_theme', theme);
+}
+
+function toggleThemeCycle() {
+    if(currentTheme === 'pure-black') applyTheme('light');
+    else applyTheme('pure-black');
+}
+
+function toggleTabsView() {
+    const overlay = document.getElementById('tabs-overlay');
+    overlay.style.display = overlay.style.display === 'flex' ? 'none' : 'flex';
+    if(overlay.style.display === 'flex') renderTabs();
+}
+
+function createNewTab() {
+    const newTab = { id: Date.now(), history: [], name: "New Chat", timestamp: new Date().toLocaleString() };
+    tabs.push(newTab);
+    saveTabs();
+    loadTab(newTab.id);
+    toggleTabsView();
+}
+
+function loadTab(id) {
+    activeTabId = id;
+    localStorage.setItem('ht_active_tab', id);
+    const tab = tabs.find(t => t.id === id);
+    if(tab) tab.timestamp = new Date().toLocaleString(); 
+    chatWindow.innerHTML = '';
+    
+    if (!tab || tab.history.length === 0) {
+        showWelcomeScreen();
+    } else {
+        tab.history.forEach(m => {
+            if (m.role === 'assistant') {
+                const cont = appendMsg(marked.parse(m.content), 'ai');
+                cont.querySelector('.msg').classList.add(isUrduScript(m.content) ? 'urdu-arabic' : 'serif-mode');
+            } else {
+                appendMsg(m.content, 'user');
+            }
+        });
+    }
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+    saveTabs();
+}
+
+function saveTabs() { localStorage.setItem('ht_tabs', JSON.stringify(tabs)); }
+
+function renderTabs() {
+    const container = document.getElementById('tabs-grid-container');
+    container.innerHTML = tabs.map(t => `
+        <div class="tab-card ${t.id === activeTabId ? 'active' : ''}" onclick="loadTab(${t.id}); toggleTabsView();">
+            <div class="tab-header">
+                <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:80%">${t.name}</span>
+                <i class="fas fa-times close-tab" onclick="event.stopPropagation(); deleteTab(${t.id})"></i>
+            </div>
+            <div class="tab-preview">
+                ${t.history.length > 0 ? t.history[t.history.length-1].content.substring(0, 100) : "Empty Chat..."}
+            </div>
+        </div>
+    `).join('');
+}
+
+function deleteTab(id) {
+    if(tabs.length === 1) return alert("At least one tab must remain open.");
+    tabs = tabs.filter(t => t.id !== id);
+    if(activeTabId === id) activeTabId = tabs[0].id;
+    saveTabs();
+    renderTabs();
+    loadTab(activeTabId);
+}
+
+chatWindow.addEventListener('touchstart', () => { userInteracting = true; });
+chatWindow.addEventListener('mousedown', () => { userInteracting = true; });
+
+userInput.addEventListener('focus', () => {
+    waveWrap.style.display = 'block';
+    setTimeout(() => { waveWrap.style.display = 'none'; }, 1200);
+});
+
+langToggle.onclick = () => { langMenu.style.display = langMenu.style.display === 'flex' ? 'none' : 'flex'; modelMenu.style.display = 'none'; };
+modelToggle.onclick = () => { modelMenu.style.display = modelMenu.style.display === 'flex' ? 'none' : 'flex'; langMenu.style.display = 'none'; };
+
+sendBtn.onclick = () => {
+    if(sendBtn.classList.contains('fa-stop-circle')) {
+        if(abortController) abortController.abort();
+    } else {
+        processChat();
+    }
+};
+
+function triggerFilePicker() { 
+    if(!isVisionModel) {
+        alert("Ye model Vision support nahi karta. Is function ke liye Vision model par switch karein.");
+        return;
+    }
+    document.getElementById('file-input').click(); 
+}
+
+function handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            attachedImage = e.target.result;
+            document.getElementById('img-preview').src = attachedImage;
+            document.getElementById('image-preview-container').style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function clearImage() {
+    attachedImage = null;
+    document.getElementById('image-preview-container').style.display = 'none';
+    document.getElementById('file-input').value = '';
+}
+
+function setLang(lang, el) {
+    currentLang = lang;
+    document.querySelectorAll('.lang-opt').forEach(opt => opt.classList.remove('active-opt'));
+    el.classList.add('active-opt');
+    langMenu.style.display = 'none';
+}
+
+function setModel(model, el, hasVision) {
+    currentModel = model;
+    isVisionModel = hasVision;
+    document.querySelectorAll('.model-opt').forEach(opt => opt.classList.remove('active-opt'));
+    el.classList.add('active-opt');
+    modelMenu.style.display = 'none';
+    updateVisionUI();
+}
+
+function updateVisionUI() {
+    if(isVisionModel) {
+        fileBtn.classList.remove('file-disabled');
+    } else {
+        fileBtn.classList.add('file-disabled');
+        clearImage();
+    }
+}
+
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); renderSessions(); }
+function toggleSettings() { const m = document.getElementById('settings-modal'); m.style.display = m.style.display === 'flex' ? 'none' : 'flex'; }
+function scrollToPos(pos) { chatWindow.scrollTo(0, pos === 'bottom' ? chatWindow.scrollHeight : 0); }
+
+function saveSettings() {
+    API_KEY = document.getElementById('api-key').value;
+    TAVILY_KEY = document.getElementById('tavily-key').value;
+    SYS_PROMPT = document.getElementById('sys-prompt').value;
+    localStorage.setItem('ht_key', API_KEY);
+    localStorage.setItem('ht_tavily_key', TAVILY_KEY);
+    localStorage.setItem('ht_sys', SYS_PROMPT);
+    toggleSettings();
+}
+
+async function fetchTavilyData(query) {
+    if (!TAVILY_KEY) return "";
+    try {
+        const response = await fetch('https://api.tavily.com/search', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                api_key: TAVILY_KEY,
+                query: query,
+                search_depth: "advanced",
+                max_results: 5
+            })
+        });
+        const data = await response.json();
+        if(data.results) {
+            return `SEARCH RESULTS FROM WEB:\n${data.results.map(r => `Title: ${r.title}\nSource: ${r.url}\nContent: ${r.content}`).join('\n---\n')}`;
+        }
+        return "";
+    } catch (e) { return ""; }
+}
+
+function isUrduScript(text) { return /[\u0600-\u06FF]/.test(text); }
+
+// --- Enhanced processChat with real-time status & streaming ---
+async function processChat(p = null, isRegen = false) {
+    const prompt = p || userInput.value.trim();
+    if(!prompt && !attachedImage) return;
+    if(!API_KEY) return toggleSettings();
+
+    const welcome = document.getElementById('welcome-screen');
+    if(welcome) welcome.remove();
+
+    hasBeeped = false;
+    isChatStarted = true;
+    startHideTimer();
+
+    abortController = new AbortController();
+    sendBtn.className = 'fas fa-stop-circle header-icon-silver';
+    sendBtn.style.color = '#ff4d4d';
+
+    const startTime = Date.now();
+    let responseTimeLogged = false;
+    userInteracting = false;
+    if(!p) lastUserPrompt = prompt;
+
+    if(!isRegen) {
+        appendMsg(prompt || (attachedImage ? "Sent an image" : ""), 'user');
+        userInput.value = '';
+        userInput.style.height = 'auto';
+    }
+
+    // Step 1: Show initial processing status
+    let aiId = 'ai-' + Date.now();
+    let statusDiv = document.createElement('div');
+    statusDiv.className = 'decision-badge';
+    statusDiv.innerHTML = '<i class="fas fa-sync fa-spin"></i> Initializing...';
+    let tempContainer = appendMsg('<div class="temp-ai-placeholder"></div>', 'ai', aiId);
+    let aiDiv = document.getElementById(aiId);
+    aiDiv.innerHTML = ''; // clear placeholder
+    aiDiv.appendChild(statusDiv);
+    let contentDiv = document.createElement('div');
+    contentDiv.id = aiId + '-content';
+    aiDiv.appendChild(contentDiv);
+    
+    // Helper to update status text
+    function updateStatus(text, icon = 'fa-sync fa-spin') {
+        statusDiv.innerHTML = `<i class="fas ${icon}"></i> ${text}`;
+        if (!userInteracting) chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    updateStatus("Thinking...", "fa-spin fa-compact-disc");
+
+    // Optional: Web search if enabled
+    let webContext = "";
+    if(prompt && TAVILY_KEY && isTavilyEnabled) {
+        updateStatus("Searching on web...", "fa-spin fa-globe");
+        webContext = await fetchTavilyData(prompt);
+    }
+
+    updateStatus("Analyzing your request...", "fa-spin fa-circle-notch");
+
+    let userContent = (webContext ? "Use this search context to answer accurately: " + webContext + "\n\nUser Question: " : "") + (prompt || "Analyze this image.");
+    if(attachedImage) { 
+        userContent += "\n[Image attached for analysis]"; 
+    }
+    clearImage();
+
+    const activeTab = tabs.find(t => t.id === activeTabId);
+    if(activeTab.name === "New Chat" && prompt) activeTab.name = prompt.substring(0, 20);
+    activeTab.timestamp = new Date().toLocaleString();
+
+    let langInstruction = currentLang !== "Auto" ? ` Respond ONLY in ${currentLang}.` : "";
+
+    updateStatus("Generating response...", "fa-spin fa-spinner");
+
+    // Build history payload for chat context
+    let historyPayload = [];
+    if (activeTab && activeTab.history) {
+        activeTab.history.forEach(h => {
+            historyPayload.push({
+                role: h.role === "assistant" ? "model" : "user",
+                parts: [{ text: h.content }]
+            });
+        });
+    }
+    historyPayload.push({
+        role: "user",
+        parts: [{ text: SYS_PROMPT + langInstruction + "\n\n" + userContent }]
+    });
+
+    let fullReply = "";
+    try {
+        // Use streaming endpoint
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${currentModel}:streamGenerateContent?key=${API_KEY}&alt=sse`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                contents: historyPayload
+            }),
+            signal: abortController.signal
         });
 
-        // Onboarding workflow submission
-        function submitOnboardingName() {
-            const inputVal = document.getElementById('onboardingNameInput').value.trim();
-            username = inputVal || 'SsHASHME';
-            localStorage.setItem('wora_username', username);
-            document.getElementById('usernameInput').value = username;
-            updateIdentityUI();
-            document.getElementById('nameOnboardingModal').classList.add('hidden');
+        if(!response.ok) {
+            const errData = await response.json();
+            throw new Error(errData.error?.message || "API Error");
         }
 
-        function updateIdentityUI() {
-            document.getElementById('sidebarUserTitle').innerText = username;
-            document.getElementById('dashboardUserGreeting').innerText = username;
-        }
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
 
-        // Separate Overlay Windows Routines for My Wora Gems
-        function openWoraGemsWindow() {
-            document.getElementById('woraGemsModal').classList.remove('hidden');
-        }
-        function closeWoraGemsWindow() {
-            document.getElementById('woraGemsModal').classList.add('hidden');
-        }
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split("\n");
+            buffer = lines.pop();
 
-        // Bottom Input Processing Modes Switching Engine
-        function toggleModeType(mode) {
-            currentActiveMode = mode;
-            const quickBtn = document.getElementById('quickModeBtn');
-            const detailedBtn = document.getElementById('detailedModeBtn');
-            
-            if (mode === 'quick') {
-                quickBtn.className = "w-full py-1.5 rounded-lg text-xs font-semibold transition bg-cyan-600 text-white shadow-sm";
-                detailedBtn.className = "w-full py-1.5 rounded-lg text-xs font-semibold transition text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300";
-            } else {
-                detailedBtn.className = "w-full py-1.5 rounded-lg text-xs font-semibold transition bg-cyan-600 text-white shadow-sm";
-                quickBtn.className = "w-full py-1.5 rounded-lg text-xs font-semibold transition text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300";
-            }
-        }
-
-        // Gemini Gems Dynamic Allocation Engine Switch Logic
-        function activateWoraGem(gemName, customPromptText) {
-            systemPrompt = customPromptText;
-            document.getElementById('systemPromptInput').value = customPromptText;
-            document.getElementById('activeEngineLabel').innerText = `${gemName}`;
-            
-            // Highlight specific gem visual node
-            const elements = document.querySelectorAll('.wora-gem-item');
-            elements.forEach(el => el.classList.remove('bg-cyan-500/10', 'border-cyan-500/30'));
-            
-            if(window.event && window.event.currentTarget) {
-                window.event.currentTarget.classList.add('bg-cyan-500/10', 'border-cyan-500/30');
-            }
-            closeWoraGemsWindow();
-            startNewChat();
-        }
-
-        // Save As My Wora Action Routine
-        function saveAsMyWoraGem() {
-            const gemNameInput = document.getElementById('woraModelTagName').value.trim();
-            const promptText = document.getElementById('systemPromptInput').value.trim();
-            
-            if(!gemNameInput || !promptText) {
-                alert('Please fill both the Model Name and System Prompt fields to compile a Wora Gem.');
-                return;
-            }
-
-            const newGem = {
-                name: gemNameInput,
-                prompt: promptText
-            };
-
-            customGems.push(newGem);
-            localStorage.setItem('wora_custom_gems', JSON.stringify(customGems));
-            renderCustomGems();
-            
-            // Activate instantly
-            activateWoraGem(gemNameInput, promptText);
-            document.getElementById('woraModelTagName').value = '';
-            closeSettings();
-        }
-
-        // Render Custom Wora Gems List
-        function renderCustomGems() {
-            const container = document.getElementById('woraGemsContainer');
-            // Retain only the specific required Wora Smart component safely
-            container.innerHTML = `
-                <div onclick="activateWoraGem('Wora Smart', 'You are Wora Ai configured as an adaptive smart assistant core. Deliver balanced, pristine, and sophisticated responses mapping user needs flawlessly.')" class="wora-gem-item flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-gray-200/60 dark:hover:bg-amoled/60 cursor-pointer transition border border-transparent hover:border-cyan-500/20">
-                    <i class="fa-solid fa-wand-magic-sparkles text-cyan-500 text-sm"></i>
-                    <div class="flex flex-col truncate">
-                        <span class="font-medium text-gray-800 dark:text-gray-200">Wora Smart</span>
-                        <span class="text-[10px] text-gray-400 dark:text-gray-500 truncate">Standard Intelligent Workspace Core</span>
-                    </div>
-                </div>
-            `;
-
-            // Append dynamic user items cleanly
-            customGems.forEach((gem, idx) => {
-                const gemItem = document.createElement('div');
-                gemItem.className = "wora-gem-item flex items-center justify-between px-4 py-2.5 rounded-xl hover:bg-gray-200/60 dark:hover:bg-amoled/60 cursor-pointer transition border border-transparent hover:border-cyan-500/20 group";
-                gemItem.setAttribute('onclick', `activateWoraGem('${escapeHtml(gem.name)}', \`${escapeHtml(gem.prompt.replace(/`/g, '\\`'))}\`)`);
-                
-                gemItem.innerHTML = `
-                    <div class="flex items-center gap-3 truncate">
-                        <i class="fa-solid fa-gem text-cyan-500 text-sm animate-pulse"></i>
-                        <div class="flex flex-col truncate">
-                            <span class="font-medium text-gray-800 dark:text-gray-200 truncate">${escapeHtml(gem.name)}</span>
-                            <span class="text-[10px] text-gray-400 dark:text-gray-500 truncate">Saved Workspace Configuration</span>
-                        </div>
-                    </div>
-                    <button onclick="deleteCustomGem(event, ${idx})" class="text-gray-400 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition px-1">
-                        <i class="fa-solid fa-circle-minus text-xs"></i>
-                    </button>
-                `;
-                container.appendChild(gemItem);
-            });
-        }
-
-        function deleteCustomGem(event, idx) {
-            event.stopPropagation();
-            customGems.splice(idx, 1);
-            localStorage.setItem('wora_custom_gems', JSON.stringify(customGems));
-            renderCustomGems();
-        }
-
-        // Toggle search history component parameters
-        function toggleSearchHistoryMode() {
-            const bar = document.getElementById('searchHistoryBar');
-            const btnText = document.getElementById('searchHistoryBtnText');
-            if(bar.classList.contains('hidden')) {
-                bar.classList.remove('hidden');
-                btnText.innerText = "Close History Search";
-                document.getElementById('historySearchInput').focus();
-            } else {
-                bar.classList.add('hidden');
-                btnText.innerText = "Search History Logs";
-                document.getElementById('historySearchInput').value = "";
-                filterHistoryLogs("");
-            }
-        }
-
-        function filterHistoryLogs(query) {
-            currentSearchQuery = query.toLowerCase().trim();
-            renderHistoryList();
-        }
-
-        // Light & Dark Theme Configuration Toggle Routines
-        function toggleTheme() {
-            const html = document.documentElement;
-            const icon = document.getElementById('themeIcon');
-            if (html.classList.contains('dark')) {
-                html.classList.remove('dark');
-                icon.className = 'fa-solid fa-sun text-base';
-                localStorage.setItem('wora_theme', 'light');
-            } else {
-                html.classList.add('dark');
-                icon.className = 'fa-solid fa-moon text-base';
-                localStorage.setItem('wora_theme', 'dark');
-            }
-        }
-
-        // Dynamic Textarea Sizing System Block
-        function autoResizeInput(element) {
-            element.style.height = 'auto';
-            element.style.height = (element.scrollHeight) + 'px';
-            
-            const sendBtn = document.getElementById('sendBtn');
-            if(element.value.trim().length > 0) {
-                sendBtn.classList.remove('text-gray-400', 'dark:text-gray-600', 'bg-gray-200', 'dark:bg-amoled');
-                sendBtn.classList.add('text-white', 'bg-cyan-600', 'dark:bg-cyan-600');
-            } else {
-                sendBtn.classList.remove('text-white', 'bg-cyan-600', 'dark:bg-cyan-600');
-                sendBtn.classList.add('text-gray-400', 'dark:text-gray-600', 'bg-gray-200', 'dark:bg-amoled');
-            }
-        }
-
-        // Operational Actions Setup Block for Live Bubbles Management
-        function copyMessageText(msgId) {
-            const targetNode = document.getElementById(msgId);
-            if(!targetNode) return;
-            
-            // Re-fetch raw text format from state or internal text elements
-            let textToCopy = targetNode.innerText;
-            navigator.clipboard.writeText(textToCopy).then(() => {
-                const copyBtn = document.getElementById('btn_copy_' + msgId);
-                if(copyBtn) {
-                    copyBtn.innerHTML = `<i class="fa-solid fa-check text-emerald-500"></i>`;
-                    setTimeout(() => {
-                        copyBtn.innerHTML = `<i class="fa-regular fa-copy"></i>`;
-                    }, 2000);
-                }
-            }).catch(err => console.error('Failed to copy text string targets: ', err));
-        }
-
-        function editMessageText(msgIndex) {
-            if(msgIndex === null || msgIndex === undefined || !activeChatHistory[msgIndex]) return;
-            
-            let rawUserText = activeChatHistory[msgIndex].parts[0].text;
-            // Clear injected guidelines context strings cleanly before passing back to user panel view
-            rawUserText = rawUserText.replace(/\n\[System Guideline:.*?\]/g, "");
-            
-            const textInputNode = document.getElementById('userInput');
-            textInputNode.value = rawUserText;
-            autoResizeInput(textInputNode);
-            textInputNode.focus();
-        }
-
-        function deleteMessageBubble(bubbleElementId, historyIndex) {
-            const bubbleNode = document.getElementById(bubbleElementId);
-            if(bubbleNode) bubbleNode.remove();
-            
-            if(historyIndex !== null && historyIndex !== undefined && activeChatHistory[historyIndex]) {
-                // Delete user message or target response node from current runtime parameters array memory
-                activeChatHistory.splice(historyIndex, 1);
-                
-                // Keep the state synced cleanly into localStorage models context safely
-                if(activeChatId && savedConversations[activeChatId]) {
-                    savedConversations[activeChatId].history = [...activeChatHistory];
-                    localStorage.setItem('wora_conversations', JSON.stringify(savedConversations));
-                }
-            }
-        }
-
-        function handleKeydown(event) {
-            if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault();
-                sendMessage();
-            }
-        }
-
-        function toggleSidebar() {
-            const side = document.getElementById('sidebar');
-            side.classList.toggle('-translate-x-full');
-        }
-
-        // Loader Management Routines
-        function showWoraLoader() {
-            document.getElementById('woraLoader').classList.remove('hidden');
-        }
-
-        function hideWoraLoader() {
-            document.getElementById('woraLoader').classList.add('hidden');
-        }
-
-        // Settings modal handlers
-        function openSettings() {
-            document.getElementById('settingsModal').classList.remove('hidden');
-        }
-        function closeSettings() {
-            document.getElementById('settingsModal').classList.add('hidden');
-        }
-        function restoreDefaultPrompt() {
-            document.getElementById('systemPromptInput').value = DEFAULT_PROMPT;
-        }
-
-        function saveSettings() {
-            apiKey = document.getElementById('apiKeyInput').value.trim();
-            systemPrompt = document.getElementById('systemPromptInput').value.trim();
-            username = document.getElementById('usernameInput').value.trim() || 'SsHASHME';
-            
-            localStorage.setItem('wora_api_key', apiKey);
-            localStorage.setItem('wora_sys_prompt', systemPrompt);
-            localStorage.setItem('wora_username', username);
-            
-            updateIdentityUI();
-            closeSettings();
-        }
-
-        function injectSuggestion(text) {
-            const input = document.getElementById('userInput');
-            input.value = text;
-            autoResizeInput(input);
-            input.focus();
-        }
-
-        // Active Application Conversation Storage Management Systems
-        function renderHistoryList() {
-            const container = document.getElementById('historyContainer');
-            container.innerHTML = '';
-            
-            let sortedKeys = Object.keys(savedConversations).sort((a, b) => b - a);
-            
-            if(currentSearchQuery) {
-                sortedKeys = sortedKeys.filter(id => savedConversations[id].title.toLowerCase().includes(currentSearchQuery));
-            }
-            
-            if(sortedKeys.length === 0) {
-                container.innerHTML = `<p class="text-xs text-gray-400 dark:text-gray-600 px-4 py-2.5 italic">No matching logs found</p>`;
-                return;
-            }
-
-            sortedKeys.forEach(id => {
-                const chat = savedConversations[id];
-                const item = document.createElement('div');
-                item.className = `flex items-center justify-between px-4 py-2.5 rounded-xl cursor-pointer group transition ${activeChatId == id ? 'bg-gray-200/70 dark:bg-amoled text-cyan-600 dark:text-cyan-400 font-medium border border-cyan-500/10' : 'hover:bg-gray-200/50 dark:hover:bg-amoled/50'}`;
-                item.setAttribute('onclick', `loadConversation('${id}')`);
-                
-                item.innerHTML = `
-                    <span class="truncate pr-2 pointer-events-none">${escapeHtml(chat.title)}</span>
-                    <button onclick="deleteConversation(event, '${id}')" class="text-gray-400 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition px-1.5">
-                        <i class="fa-solid fa-trash-can text-xs"></i>
-                    </button>
-                `;
-                container.appendChild(item);
-            });
-        }
-
-        function startNewChat() {
-            activeChatId = null;
-            activeChatHistory = [];
-            document.getElementById('messageStream').innerHTML = '';
-            document.getElementById('messageStream').classList.add('hidden');
-            document.getElementById('defaultDashboard').classList.remove('hidden');
-            const input = document.getElementById('userInput');
-            input.value = '';
-            autoResizeInput(input);
-            renderHistoryList();
-        }
-
-        function loadConversation(id) {
-            if(!savedConversations[id]) return;
-            activeChatId = id;
-            activeChatHistory = [...savedConversations[id].history];
-            
-            document.getElementById('defaultDashboard').classList.add('hidden');
-            const stream = document.getElementById('messageStream');
-            stream.innerHTML = '';
-            stream.classList.remove('hidden');
-
-            activeChatHistory.forEach((msg, idx) => {
-                const role = msg.role === 'user' ? 'user' : 'model';
-                const trackingId = role === 'model' ? `loaded_msg_${id}_${idx}` : null;
-                renderBubble(msg.parts[0].text, role, trackingId, true, idx);
-                if(trackingId) {
-                    document.getElementById(trackingId).innerHTML = formatMarkdown(msg.parts[0].text);
-                }
-            });
-            renderHistoryList();
-            
-            // Fast scroll container viewport to real bottom boundary safely
-            setTimeout(() => {
-                const chatSpaceNode = document.getElementById('chatSpace');
-                chatSpaceNode.scrollTop = chatSpaceNode.scrollHeight;
-            }, 50);
-        }
-
-        function deleteConversation(event, id) {
-            event.stopPropagation();
-            delete savedConversations[id];
-            localStorage.setItem('wora_conversations', JSON.stringify(savedConversations));
-            if(activeChatId === id) {
-                startNewChat();
-            } else {
-                renderHistoryList();
-            }
-        }
-
-        // Live Operational Streaming Transmission Core Logic
-        async function sendMessage() {
-            const inputElement = document.getElementById('userInput');
-            const prompt = inputElement.value.trim();
-            if(!prompt) return;
-
-            if(!apiKey) {
-                alert('An API token context is missing. Map your configuration keys under Configurations panel.');
-                openSettings();
-                return;
-            }
-
-            document.getElementById('defaultDashboard').classList.add('hidden');
-            const streamContainer = document.getElementById('messageStream');
-            streamContainer.classList.remove('hidden');
-
-            inputElement.value = '';
-            autoResizeInput(inputElement);
-
-            const userHistoryIndex = activeChatHistory.length;
-            // Render User Query Visual Bubble Element
-            renderBubble(prompt, 'user', null, false, userHistoryIndex);
-
-            const apiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:streamGenerateContent?key=${apiKey}`;
-            
-            // Custom prompt modifiers based on active selection mode safely injected
-            let processedPrompt = prompt;
-            if (currentActiveMode === 'quick') {
-                processedPrompt += "\n[System Guideline: Provide a fast, highly concise, direct and brief response.]";
-            } else if (currentActiveMode === 'detailed') {
-                processedPrompt += "\n[System Guideline: Provide an extremely exhaustive, detailed, deep structural and comprehensive breakdown response.]";
-            }
-
-            activeChatHistory.push({ role: "user", parts: [{ text: processedPrompt }] });
-
-            const modelHistoryIndex = activeChatHistory.length;
-            const trackingId = 'wora_stream_chunk_' + Date.now();
-            renderBubble('', 'model', trackingId, false, modelHistoryIndex);
-            
-            const targetTextNode = document.getElementById(trackingId);
-            const cursorNode = document.getElementById('cursor_' + trackingId);
-            const chatSpaceWindow = document.getElementById('chatSpace');
-
-            // Trigger attractive animated loading indicator layers
-            showWoraLoader();
-
-            try {
-                const response = await fetch(apiEndpoint, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: activeChatHistory,
-                        systemInstruction: { parts: [{ text: systemPrompt }] },
-                        generationConfig: { temperature: 0.7, maxOutputTokens: 8192 }
-                    })
-                });
-
-                // Dismiss beautiful loading screen once stream pipeline connects successfully
-                hideWoraLoader();
-
-                if(!response.ok) throw new Error(`Status response error code: ${response.status}`);
-
-                const reader = response.body.getReader();
-                const decoder = new TextDecoder("utf-8");
-                let completeResponseString = '';
-
-                while(true) {
-                    const { done, value } = await reader.read();
-                    if(done) break;
-                    
-                    const chunkText = decoder.decode(value, { stream: true });
-                    const lines = chunkText.split('\n');
-                    
-                    for(const line of lines) {
-                        if(line.trim().startsWith('"text":') || line.includes('"text"')) {
-                            const match = line.match(/"text"\s*:\s*"(.*)"/);
-                            if(match && match[1]) {
-                                let cleanChunk = match[1]
-                                    .replace(/\\n/g, '\n')
-                                    .replace(/\\t/g, '\t')
-                                    .replace(/\\"/g, '"')
-                                    .replace(/\\\\/g, '\\');
-                                
-                                completeResponseString += cleanChunk;
-                                targetTextNode.innerHTML = formatMarkdown(completeResponseString);
-                                
-                                // Gemini-Spec Instant Scroll Positioning Frame
-                                chatSpaceWindow.scrollTop = chatSpaceWindow.scrollHeight;
+            for (const line of lines) {
+                if (line.startsWith("data: ")) {
+                    const dataStr = line.slice(6);
+                    if (dataStr === "[DONE]") continue;
+                    try {
+                        const parsed = JSON.parse(dataStr);
+                        let chunkText = parsed.candidates?.[0]?.content?.parts?.[0]?.text;
+                        if (chunkText) {
+                            if (!responseTimeLogged) {
+                                const initialDelay = ((Date.now() - startTime) / 1000).toFixed(2);
+                                updateStatus(`Response started in ${initialDelay}s...`, "fa-spin fa-spinner");
+                                responseTimeLogged = true;
                             }
+                            if (!hasBeeped) {
+                                document.getElementById('beep-sound').play().catch(()=>{});
+                                hasBeeped = true;
+                            }
+                            chunkText = chunkText.replace(/Gemini/g, "Hash Ai");
+                            fullReply += chunkText;
+                            // Render markdown incrementally
+                            contentDiv.innerHTML = marked.parse(fullReply);
+                            contentDiv.className = isUrduScript(fullReply) ? 'urdu-arabic' : 'serif-mode';
+                            if (!userInteracting) chatWindow.scrollTop = chatWindow.scrollHeight;
                         }
-                    }
+                    } catch (e) { console.warn("Parse error", e); }
                 }
-
-                if(cursorNode) cursorNode.remove();
-                activeChatHistory.push({ role: "model", parts: [{ text: completeResponseString }] });
-
-                // Commit parameters natively into local database records arrays
-                if(!activeChatId) {
-                    activeChatId = Date.now().toString();
-                    savedConversations[activeChatId] = {
-                        title: prompt.length > 35 ? prompt.substring(0, 35) + '...' : prompt,
-                        history: []
-                    };
-                }
-                savedConversations[activeChatId].history = [...activeChatHistory];
-                localStorage.setItem('wora_conversations', JSON.stringify(savedConversations));
-                renderHistoryList();
-                
-                chatSpaceWindow.scrollTop = chatSpaceWindow.scrollHeight;
-
-            } catch (err) {
-                console.error(err);
-                hideWoraLoader();
-                if(cursorNode) cursorNode.remove();
-                targetTextNode.innerHTML = `<span class="text-rose-500 dark:text-rose-400 font-medium flex items-center gap-2"><i class="fa-solid fa-triangle-exclamation"></i> Action processing routine dropped. Check credentials, client network states, or operational limits.</span>`;
             }
         }
 
-        function renderBubble(content, role, id = null, staticRender = false, historyIndex = null) {
-            const stream = document.getElementById('messageStream');
-            const row = document.createElement('div');
-            const bubbleUniqueWrapperId = 'bubble_row_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
-            row.id = bubbleUniqueWrapperId;
-            row.className = `flex gap-5 w-full group/bubble ${role === 'user' ? 'justify-end' : 'justify-start'}`;
-
-            if(role === 'user') {
-                // Strip the system guidelines before rendering on bubble view for presentation clarity
-                let displayContent = content.replace(/\n\[System Guideline:.*?\]/g, "");
-                row.innerHTML = `
-                    <div class="flex flex-col items-end max-w-[85%] gap-1.5">
-                        <div class="bg-gray-100 dark:bg-woraDarkGray border border-gray-200/60 dark:border-woraBorder text-gray-800 dark:text-gray-200 px-5 py-3.5 rounded-2xl text-[16px] leading-relaxed whitespace-pre-wrap select-text shadow-xs w-full">
-                            ${escapeHtml(displayContent)}
-                        </div>
-                        <div class="flex items-center gap-3 px-2 text-xs text-gray-400 dark:text-gray-500 opacity-0 group-hover/bubble:opacity-100 transition-opacity duration-200">
-                            <button onclick="editMessageText(${historyIndex})" class="hover:text-cyan-500 transition" title="Edit Prompt">
-                                <i class="fa-regular fa-pen-to-square"></i> <span class="text-[11px] font-medium ml-0.5">Edit</span>
-                            </button>
-                            <button onclick="deleteMessageBubble('${bubbleUniqueWrapperId}', ${historyIndex})" class="hover:text-rose-500 transition" title="Delete Message">
-                                <i class="fa-regular fa-trash-can"></i> <span class="text-[11px] font-medium ml-0.5">Delete</span>
-                            </button>
-                        </div>
-                    </div>
-                `;
-            } else {
-                const responseTextId = id || 'msg_resp_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
-                row.innerHTML = `
-                    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white font-bold text-sm shadow flex-shrink-0 mt-1">
-                        W
-                    </div>
-                    <div class="flex-grow w-full flex flex-col space-y-1">
-                        <div class="flex items-center justify-between w-full">
-                            <span class="text-[11px] font-bold text-gray-400 dark:text-gray-600 uppercase tracking-widest">Wora Ai</span>
-                            <div class="flex items-center gap-3 text-xs text-gray-400 dark:text-gray-500 opacity-0 group-hover/bubble:opacity-100 transition-opacity duration-200 pr-2">
-                                <button id="btn_copy_${responseTextId}" onclick="copyMessageText('${responseTextId}')" class="hover:text-cyan-500 transition" title="Copy Text Response">
-                                    <i class="fa-regular fa-copy"></i> <span class="text-[11px] font-medium ml-0.5">Copy</span>
-                                </button>
-                                <button onclick="deleteMessageBubble('${bubbleUniqueWrapperId}', ${historyIndex})" class="hover:text-rose-500 transition" title="Delete Message">
-                                    <i class="fa-regular fa-trash-can"></i> <span class="text-[11px] font-medium ml-0.5">Delete</span>
-                                </button>
-                            </div>
-                        </div>
-                        <div id="${responseTextId}" class="text-[16px] text-gray-800 dark:text-gray-200 leading-relaxed tracking-wide space-y-4 select-text w-full p-1">
-                            ${content}
-                        </div>
-                        ${staticRender ? '' : `<span id="cursor_${responseTextId}" class="w-2 h-4 bg-cyan-500 inline-block animate-pulse mt-1 rounded-xs"></span>`}
-                    </div>
-                `;
-            }
-            stream.appendChild(row);
-            if(!staticRender) {
-                const chatSpaceNode = document.getElementById('chatSpace');
-                chatSpaceNode.scrollTop = chatSpaceNode.scrollHeight;
-            }
+        const responseDelay = ((Date.now() - startTime) / 1000).toFixed(2);
+        // Replace status badge with final info badge
+        statusDiv.innerHTML = `<i class="fas fa-brain"></i> Hash Ai 2.5 | ${TAVILY_KEY && isTavilyEnabled ? '<i class="fas fa-globe"></i> Web Search | ' : ''}<i class="fas fa-clock"></i> Total: ${responseDelay}s`;
+        
+        if (fullReply.trim() === "") {
+            fullReply = "No response generated. Please try again.";
+            contentDiv.innerHTML = marked.parse(fullReply);
         }
 
-        // Custom Quick Layout Markdown Renderer Engine Logic Modules
-        function formatMarkdown(text) {
-            let html = text;
-            
-            // Render Isolated Dynamic Code Block Shells cleanly
-            html = html.replace(/```([\s\S]*?)```/g, function(match, code) {
-                return `<div class="bg-gray-50 dark:bg-woraDarkGray border border-gray-200 dark:border-woraBorder rounded-xl my-4 overflow-hidden font-mono text-xs md:text-sm text-gray-700 dark:text-gray-300 w-full">
-                    <div class="bg-gray-100 dark:bg-[#1a1a1a] px-4 py-2.5 text-[11px] text-gray-400 dark:text-gray-500 font-bold border-b border-gray-200 dark:border-woraBorder tracking-wider flex justify-between items-center">
-                        <span>WORKSPACE RUNTIME SOURCE</span>
-                    </div>
-                    <pre class="p-4 overflow-x-auto select-text no-scrollbar"><code>${escapeHtml(code.trim())}</code></pre>
-                </div>`;
-            });
+        activeTab.history.push({ role: "user", content: prompt }, { role: "assistant", content: fullReply });
+        saveTabs();
+        addTools(aiDiv, fullReply, aiId);
+        applyCodeButtons(aiDiv);
+        generateSuggestions(fullReply);
 
-            // Line Headers Processing
-            html = html.replace(/^### (.*$)/gim, '<h3 class="text-base font-bold text-cyan-600 dark:text-cyan-400 pt-2 tracking-wide">$1</h3>');
-            html = html.replace(/^## (.*$)/gim, '<h2 class="text-lg font-bold text-gray-900 dark:text-white pt-3 border-b border-gray-100 dark:border-woraBorder pb-1">$1</h2>');
-            html = html.replace(/^# (.*$)/gim, '<h1 class="text-xl font-black text-gray-900 dark:text-white pt-4 tracking-tight">$1</h1>');
-
-            // Strong Bolds Transformation Elements
-            html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-gray-900 dark:text-white">$1</strong>');
-
-            // Process Return Carriage Vectors cleanly 
-            html = html.replace(/\n/g, '<br>');
-
-            // Dynamic Custom Unordered List Components Assembly Routine
-            html = html.replace(/^\s*[\-\*]\s+(.*)$/gim, '<div class="flex items-start gap-2.5 my-1.5"><span class="mt-2.5 block w-1.5 h-1.5 rounded-full flex-shrink-0 bg-cyan-500"></span><span class="text-gray-700 dark:text-gray-300">$1</span></div>');
-
-            return html;
+    } catch (e) {
+        if(e.name !== 'AbortError') {
+            statusDiv.innerHTML = `<i class="fas fa-circle-exclamation"></i> Error: ${e.message}`;
+            contentDiv.innerHTML = `<div class="error-msg">❌ Failed to get response: ${e.message}</div>`;
+        } else {
+            statusDiv.innerHTML = `<i class="fas fa-ban"></i> Stopped by user.`;
+            contentDiv.innerHTML = "";
         }
+    }
 
-        function escapeHtml(text) {
-            return text
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-        }
-    </script>
+    sendBtn.className = 'fas fa-paper-plane header-icon-silver';
+    sendBtn.style.color = '';
+}
+
+function appendMsg(content, type, id = '') {
+    const container = document.createElement('div');
+    container.className = 'msg-container';
+    const div = document.createElement('div');
+    div.className = `msg ${type}`;
+    if(id) div.id = id;
+
+    if(type.includes('user')) {
+        const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        div.innerHTML = `<div class="user-txt">${content}</div>
+        <div class="msg-meta"><span><i class="fas fa-clock"></i> ${timeStr}</span>
+        <div><span class="copy-user-btn" onclick="copyUserMsg(this)"><i class="fas fa-copy"></i> Copy</span>
+        <span class="del-msg-btn" onclick="deleteThisMessage(this)"><i class="fas fa-trash"></i></span></div></div>`;
+        if(isUrduScript(content)) div.classList.add('urdu-arabic');
+    } else { div.innerHTML = content; }
+
+    container.appendChild(div);
+    chatWindow.appendChild(container);
+    return container;
+}
+
+function deleteThisMessage(btn) { 
+    const container = btn.closest('.msg-container');
+    const index = Array.from(chatWindow.children).indexOf(container);
+    const activeTab = tabs.find(t => t.id === activeTabId);
+    activeTab.history.splice(index, 1);
+    saveTabs();
+    container.remove(); 
+}
+
+function clearAllChat() { 
+    if(confirm("Clear this tab's chat?")) { 
+        const activeTab = tabs.find(t => t.id === activeTabId);
+        activeTab.history = [];
+        saveTabs();
+        loadTab(activeTabId);
+    } 
+}
+
+function copyUserMsg(btn) {
+    const txt = btn.parentElement.parentElement.parentElement.querySelector('.user-txt').innerText;
+    navigator.clipboard.writeText(txt);
+    btn.innerHTML = 'Copied!';
+    setTimeout(() => btn.innerHTML = 'Copy', 2000);
+}
+
+function renderSessions() {
+    document.getElementById('history-list').innerHTML = tabs.map(t => `
+    <div class="history-card" onclick="loadTab(${t.id}); toggleSidebar();">
+        <div class="history-info">
+            <strong><i class="fas fa-comment"></i> ${t.name}</strong>
+            <i class="fas fa-trash del-btn" onclick="event.stopPropagation(); deleteTab(${t.id}); renderSessions();"></i>
+        </div>
+        <div class="history-date"><i class="fas fa-calendar-alt"></i> ${t.timestamp || 'No time data'}</div>
+    </div>`).join('');
+}
+
+function addTools(div, text, aiId) {
+    const tools = document.createElement('div');
+    tools.className = 'msg-tools';
+    tools.innerHTML = `<button class="tool-btn silver-btn-anim" onclick="copyFull('${aiId}')"><i class="fas fa-copy"></i> Copy</button>
+    <button class="tool-btn" onclick="processChat(lastUserPrompt, true)"><i class="fas fa-sync-alt"></i> Redo</button>`;
+    div.appendChild(tools);
+}
+
+function copyFull(aiId) { navigator.clipboard.writeText(document.getElementById(aiId + '-content').innerText); }
+
+function applyCodeButtons(div) {
+    div.querySelectorAll('pre').forEach(pre => {
+        const codeText = pre.innerText;
+        
+        pre.style.position = 'relative';
+        
+        const btnContainer = document.createElement('div');
+        btnContainer.style.position = 'absolute';
+        btnContainer.style.right = '10px';
+        btnContainer.style.top = '10px';
+        btnContainer.style.display = 'flex';
+        btnContainer.style.gap = '5px';
+
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'copy-code-btn silver-btn-anim';
+        copyBtn.innerText = 'COPY';
+        copyBtn.onclick = () => { 
+            navigator.clipboard.writeText(codeText); 
+            copyBtn.innerText = 'DONE!'; 
+            setTimeout(() => copyBtn.innerText = 'COPY', 2000); 
+        };
+
+        const prevBtn = document.createElement('button');
+        prevBtn.className = 'copy-code-btn silver-btn-anim';
+        prevBtn.innerText = 'PREVIEW';
+        prevBtn.style.background = 'var(--accent)';
+        prevBtn.style.color = '#000';
+        prevBtn.onclick = () => showPreview(codeText);
+
+        btnContainer.appendChild(copyBtn);
+        btnContainer.appendChild(prevBtn);
+        pre.appendChild(btnContainer);
+    });
+}
+
+function generateSuggestions(reply) {
+    const box = document.getElementById('suggestion-box');
+    box.innerHTML = '';
+    ["Explain", "Give examples", "Summarize"].forEach(h => {
+        const pill = document.createElement('div');
+        pill.className = 'suggest-pill';
+        pill.innerText = h;
+        pill.onclick = () => processChat(h);
+        box.appendChild(pill);
+    });
+}
+
+userInput.oninput = function() { this.style.height = 'auto'; this.style.height = this.scrollHeight + 'px'; };
+
+initApp();
+
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+            .then((reg) => console.log('Hash Ai Offline Ready!'))
+            .catch((err) => console.log('Service Worker Failed:', err));
+    });
+}
+</script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hash-ai-v1.1.0'; // <-- Jab bhi index.html badlein, yeh version zaroor badlein!
+const CACHE_NAME = 'hash-ai-v1.1.1'; // <-- Jab bhi index.html badlein, yeh version zaroor badlein!
 const ASSETS = [
   './index.html',
   './icon.png',
